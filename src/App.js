@@ -5,18 +5,19 @@ module.exports = React.createClass({
     getInitialState () {
         return {
             contentStyle: {
-                position: 'relative',
-                width: '400px',
-                margin: '50px auto',
-                padding: '20px',
                 background: 'white',
-                boxShadow: '0 0 20px black'
+                boxShadow: '0 0 20px black'.
+                marginLeft: '58%',
+                marginTop: '17%',
+                padding: '20px',
+                position: 'fixed',
+                width: '22%'
             },
             imageStyle: {
-                position: 'fixed',
-                top: 0,
                 left: 0,
-                maxWidth: '100%'
+                maxWidth: '100%',
+                position: 'fixed',
+                top: 0
             }
         }
     },
