@@ -6,7 +6,7 @@ module.exports = React.createClass({
         return {
             contentStyle: {
                 background: 'white',
-                boxShadow: '0 0 20px black'.
+                boxShadow: '0 0 20px black',
                 marginLeft: '58%',
                 marginTop: '17%',
                 padding: '20px',

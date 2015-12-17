@@ -14,7 +14,7 @@ module.exports = React.createClass({
 
     componentDidMount () {
         var html = _.first(document.getElementsByTagName('html'))
-        
+
         html.style.background = 'url(../public/inside_1.jpg) no-repeat center center fixed'
         html.style.backgroundSize = 'cover'
     },
