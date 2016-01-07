@@ -30,7 +30,7 @@ module.exports = React.createClass({
                         </div>
                     )
                     : null
-}
+                }
             </div>
         );
     }
