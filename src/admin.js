@@ -4,13 +4,13 @@ const Col = require('react-bootstrap').Col;
 const Grid = require('react-bootstrap').Grid;
 const Row = require('react-bootstrap').Row;
 
+const Glyphicon = require('react-bootstrap').Glyphicon;
 const Nav = require('react-bootstrap').Nav;
 const Navbar = require('react-bootstrap').Navbar;
 const NavItem = require('react-bootstrap').NavItem;
-
-const Glyphicon = require('react-bootstrap').Glyphicon;
-
 const Panel = require('react-bootstrap').Panel;
+
+const ImageDropzone = require('./ImageDropzone');
 
 module.exports = React.createClass({
     render () {
@@ -31,11 +31,13 @@ module.exports = React.createClass({
                         <Col xs={6}>
                             <Panel header={<span><Glyphicon glyph="road" />{' Cars'}</span>}>
                                 {'Panel Content'}
+                                <ImageDropzone />
                             </Panel>
                         </Col>
                         <Col xs={6}>
                             <Panel header={<span><Glyphicon glyph="picture" />{' Backgrounds'}</span>}>
                                 {'Panel Content'}
+                                <ImageDropzone />
                             </Panel>
                         </Col>
                     </Row>
@@ -43,6 +45,7 @@ module.exports = React.createClass({
                         <Col xs={12}>
                             <Panel header={<span><Glyphicon glyph="music" />{' Playlist'}</span>}>
                                 {'Panel Content'}
+                                <ImageDropzone />
                             </Panel>
                         </Col>
                     </Row>
