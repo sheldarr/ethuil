@@ -30,13 +30,11 @@ module.exports = React.createClass({
                     <Row>
                         <Col xs={6}>
                             <Panel header={<span><Glyphicon glyph="road" />{' Cars'}</span>}>
-                                {'Panel Content'}
                                 <ImageDropzone />
                             </Panel>
                         </Col>
                         <Col xs={6}>
                             <Panel header={<span><Glyphicon glyph="picture" />{' Backgrounds'}</span>}>
-                                {'Panel Content'}
                                 <ImageDropzone />
                             </Panel>
                         </Col>
@@ -44,7 +42,6 @@ module.exports = React.createClass({
                     <Row>
                         <Col xs={12}>
                             <Panel header={<span><Glyphicon glyph="music" />{' Playlist'}</span>}>
-                                {'Panel Content'}
                                 <ImageDropzone />
                             </Panel>
                         </Col>
