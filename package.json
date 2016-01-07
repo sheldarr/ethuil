@@ -26,8 +26,12 @@
     "webpack-dev-server": "^1.12.1"
   },
   "dependencies": {
+    "deep-equal": "^1.0.1",
+    "history": "^1.17.0",
     "lodash": "^3.10.1",
+    "qs": "^6.0.1",
     "react": "^0.14.0",
-    "react-dom": "^0.14.0"
+    "react-dom": "^0.14.0",
+    "react-router": "^1.0.3"
   }
 }

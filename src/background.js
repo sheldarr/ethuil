@@ -1,5 +1,5 @@
-const React = require('react')
-const _ = require('lodash')
+const React = require('react');
+const _ = require('lodash');
 
 module.exports = React.createClass({
     propTypes: {
@@ -9,17 +9,17 @@ module.exports = React.createClass({
     getInitialState () {
         return {
             html: _.first(document.getElementsByTagName('html'))
-        }
+        };
     },
 
     componentDidMount () {
-        var html = _.first(document.getElementsByTagName('html'))
+        var html = _.first(document.getElementsByTagName('html'));
 
-        html.style.background = 'url(../public/inside_1.jpg) no-repeat center center fixed'
-        html.style.backgroundSize = 'cover'
+        html.style.background = 'url(../public/inside_1.jpg) no-repeat center center fixed';
+        html.style.backgroundSize = 'cover';
     },
 
     render () {
-        return <div></div>
+        return <div></div>;
     }
-})
+});
