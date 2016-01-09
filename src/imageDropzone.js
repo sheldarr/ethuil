@@ -1,6 +1,8 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
 
+import { Glyphicon } from 'react-bootstrap';
+
 const ImageDropzone = React.createClass({
     getInitialState () {
         return {images: []};
@@ -21,10 +23,20 @@ const ImageDropzone = React.createClass({
         width: '46%'
     },
 
+    uploadGlyphiconStyle: {
+        fontSize: '2.5em',
+        position: 'relative',
+        textAlign: 'center',
+        top: '50%',
+        transform: 'translateY(-50%)'
+    },
+
     render () {
         return (
             <Dropzone multiple={false} onDrop={this.handleDrop} style={this.dropzoneStyle}>
-                <div>{'Try dropping some files here, or click to select files to upload.'}</div>
+                <div style={this.uploadGlyphiconStyle}>
+                    <Glyphicon glyph="upload" />
+                </div>
             </Dropzone>
         );
     }

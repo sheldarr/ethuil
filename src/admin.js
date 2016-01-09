@@ -1,5 +1,7 @@
 import React from 'react';
 
+import _ from 'lodash';
+
 import { Button, Col, Glyphicon, Grid, Nav, Navbar, NavItem, Panel, Row, Table } from 'react-bootstrap';
 
 import ImageDropzone from './ImageDropzone';
@@ -14,13 +16,16 @@ const Admin = React.createClass({
                 name: 'inside_1.jpg'
             }],
             songs: [{
-                name: 'Pink Floyd - The Wall',
+                id: 1,
+                name: 'Pink Floyd - Hey You',
                 url: 'http://song'
             }, {
-                name: 'Pink Floyd - Mother',
+                id: 2,
+                name: 'Pink Floyd - Money',
                 url: 'http://song'
             }, {
-                name: 'Pink Floyd - The Wall',
+                id: 3,
+                name: 'Pink Floyd - Wish You Were Here',
                 url: 'http://song'
             }]
         };
@@ -44,6 +49,36 @@ const Admin = React.createClass({
         position: 'relative'
     },
 
+    handleCarRemove (name) {
+        var cars = _.clone(this.state.cars, true);
+
+        _.remove(cars, {name: name});
+
+        this.setState({
+            cars: cars
+        });
+    },
+
+    handleBackgroundRemove (name) {
+        var backgrounds = _.clone(this.state.backgrounds, true);
+
+        _.remove(backgrounds, {name: name});
+
+        this.setState({
+            backgrounds: backgrounds
+        });
+    },
+
+    handleSongRemove (id) {
+        var songs = _.clone(this.state.songs, true);
+
+        _.remove(songs, {id: id});
+
+        this.setState({
+            songs: songs
+        });
+    },
+
     render () {
         return (
             <div>
@@ -65,7 +100,7 @@ const Admin = React.createClass({
                                     this.state.cars.map(car => (
                                         <div key={car.name} style={this.imageContainerStyle}>
                                             <img src={'../public/' + car.name} style={this.imageStyle}/>
-                                            <Button bsStyle="danger" style={this.deleteButtonStyle}><Glyphicon glyph="remove" /></Button>
+                                            <Button bsStyle="danger" onClick={this.handleCarRemove.bind(this, car.name)} style={this.deleteButtonStyle}><Glyphicon glyph="remove" /></Button>
                                         </div>
                                     ))
                                 }
@@ -78,7 +113,7 @@ const Admin = React.createClass({
                                     this.state.backgrounds.map(background => (
                                         <div key={background.name} style={this.imageContainerStyle}>
                                             <img src={'../public/' + background.name} style={this.imageStyle}/>
-                                            <Button bsStyle="danger" style={this.deleteButtonStyle}><Glyphicon glyph="remove" /></Button>
+                                            <Button bsStyle="danger" onClick={this.handleBackgroundRemove.bind(this, background.name)} style={this.deleteButtonStyle}><Glyphicon glyph="remove" /></Button>
                                         </div>
                                     ))
                                 }
@@ -100,8 +135,9 @@ const Admin = React.createClass({
                                     </thead>
                                     <tbody>
                                         {this.state.songs.map(song =>
-                                            <tr key={song.name}>
+                                            <tr key={song.id}>
                                                 <td>
+                                                    {song.id}
                                                 </td>
                                                 <td>
                                                     {song.name}
@@ -111,12 +147,16 @@ const Admin = React.createClass({
                                                 </td>
                                                 <td>
                                                     <div className="pull-right">
+                                                        <Button bsStyle="danger" onClick={this.handleSongRemove.bind(this, song.id)}>
+                                                            <Glyphicon glyph="remove" />
+                                                        </Button>
                                                     </div>
                                                 </td>
                                             </tr>
                                         )}
                                     </tbody>
                                 </Table>
+                                <Button block bsStyle="success"><Glyphicon glyph="plus"/>{' Add new song'}</Button>
                             </Panel>
                         </Col>
                     </Row>
