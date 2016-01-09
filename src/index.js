@@ -1,14 +1,12 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const App = require('./app');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const Route = require('react-router').Route;
-const Router = require('react-router').Router;
-const IndexRoute = require('react-router').IndexRoute;
+import { IndexRoute, Route, Router } from 'react-router';
 
-const Admin = require('./admin');
-const NotFound = require('./notFound');
-const Playlist = require('./playlist');
+import Admin from './admin';
+import App from './app';
+import NotFound from './notFound';
+import Playlist from './playlist';
 
 ReactDOM.render(
   <Router>

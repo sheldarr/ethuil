@@ -1,18 +1,10 @@
-const React = require('react');
+import React from 'react';
 
-const Col = require('react-bootstrap').Col;
-const Grid = require('react-bootstrap').Grid;
-const Row = require('react-bootstrap').Row;
+import { Col, Glyphicon, Grid, Nav, Navbar, NavItem, Panel, Row } from 'react-bootstrap';
 
-const Glyphicon = require('react-bootstrap').Glyphicon;
-const Nav = require('react-bootstrap').Nav;
-const Navbar = require('react-bootstrap').Navbar;
-const NavItem = require('react-bootstrap').NavItem;
-const Panel = require('react-bootstrap').Panel;
+import ImageDropzone from './ImageDropzone';
 
-const ImageDropzone = require('./ImageDropzone');
-
-module.exports = React.createClass({
+const Admin = React.createClass({
     render () {
         return (
             <div>
@@ -51,3 +43,5 @@ module.exports = React.createClass({
         );
     }
 });
+
+export default Admin;

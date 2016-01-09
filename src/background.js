@@ -1,7 +1,7 @@
-const React = require('react');
-const _ = require('lodash');
+import React from 'react';
+import _ from 'lodash';
 
-module.exports = React.createClass({
+const Background = React.createClass({
     propTypes: {
         url: React.PropTypes.string.isRequired
     },
@@ -23,3 +23,5 @@ module.exports = React.createClass({
         return <div></div>;
     }
 });
+
+export default Background;

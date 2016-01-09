@@ -1,7 +1,7 @@
-const React = require('react');
-const Dropzone = require('react-dropzone');
+import React from 'react';
+import Dropzone from 'react-dropzone';
 
-module.exports = React.createClass({
+const ImageDropzone = React.createClass({
     getInitialState () {
         return {files: []};
     },
@@ -35,3 +35,5 @@ module.exports = React.createClass({
         );
     }
 });
+
+export default ImageDropzone;

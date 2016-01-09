@@ -1,6 +1,6 @@
-const React = require('react');
+import React from 'react';
 
-module.exports = React.createClass({
+const App = React.createClass({
     propTypes: {
         children: React.PropTypes.node
     },
@@ -13,3 +13,5 @@ module.exports = React.createClass({
         );
     }
 });
+
+export default App;

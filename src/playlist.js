@@ -1,8 +1,8 @@
-const React = require('react');
+import React from 'react';
 
-const Background = require('./background');
+import Background from './background';
 
-module.exports = React.createClass({
+const Playlist = React.createClass({
     getInitialState () {
         return {
             contentStyle: {
@@ -36,3 +36,5 @@ module.exports = React.createClass({
         );
     }
 });
+
+export default Playlist;

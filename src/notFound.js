@@ -1,9 +1,11 @@
-const React = require('react');
+import React from 'react';
 
-module.exports = React.createClass({
+const NotFound = React.createClass({
     render () {
         return (
             <div>{'Not found'}</div>
         );
     }
 });
+
+export default NotFound;
