@@ -1,6 +1,9 @@
+const _ = require('lodash');
 const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
+const multer = require('multer');
+const upload = multer({ dest: './public' });
 
 const app = express();
 const port = 3033;
@@ -31,6 +34,14 @@ router.get('/car', function (req, res) {
 
         res.json(files);
     });
+});
+
+router.post('/car', upload.any(), function (req, res) {
+    console.log('POST: /car');
+
+    let car =  _.first(req.files);
+
+    res.sendStatus(200);
 });
 
 router.get('/background', function (req, res) {

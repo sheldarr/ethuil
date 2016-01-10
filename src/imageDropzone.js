@@ -1,15 +1,15 @@
-import React from 'react';
+import _ from 'lodash';
 import Dropzone from 'react-dropzone';
-
+import React from 'react';
 import { Glyphicon } from 'react-bootstrap';
 
 const ImageDropzone = React.createClass({
-    getInitialState () {
-        return {images: []};
+    propTypes: {
+        onDrop: React.PropTypes.func.isRequired
     },
 
     handleDrop (images) {
-        this.setState({images: images});
+        this.props.onDrop(_.first(images));
     },
 
     dropzoneStyle: {

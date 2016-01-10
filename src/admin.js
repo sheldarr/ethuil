@@ -143,6 +143,22 @@ const Admin = React.createClass({
         });
     },
 
+    handleCarDrop (car) {
+        console.log('Drop', car);
+
+        CarsApi.create(car)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                alert('Api error ' + error);
+            });
+    },
+
+    handleBackgroundDrop (background) {
+        console.log('Drop', background);
+    },
+
     render () {
         return (
             <div>
@@ -174,7 +190,7 @@ const Admin = React.createClass({
                                         </div>
                                     ))
                                 }
-                                <ImageDropzone />
+                                <ImageDropzone onDrop={this.handleCarDrop}/>
                             </Panel>
                         </Col>
                         <Col xs={6}>
@@ -193,7 +209,7 @@ const Admin = React.createClass({
                                         </div>
                                     ))
                                 }
-                                <ImageDropzone />
+                                <ImageDropzone onDrop={this.handleBackgroundDrop}/>
                             </Panel>
                         </Col>
                     </Row>
