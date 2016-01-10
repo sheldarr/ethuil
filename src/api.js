@@ -2,11 +2,9 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
 
-var app = express();
-
-var port = 3033;
-
-var router = express.Router();
+const app = express();
+const port = 3033;
+const router = express.Router();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

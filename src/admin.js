@@ -4,42 +4,56 @@ import _ from 'lodash';
 
 import { Button, Col, Glyphicon, Grid, Nav, Navbar, NavItem, Panel, Row, Table } from 'react-bootstrap';
 
+import BackgroundsApi from './BackgroundsApi';
+import CarsApi from './CarsApi';
 import ConfirmationModal from './ConfirmationModal';
 import ImageDropzone from './ImageDropzone';
+import SongsApi from './SongsApi';
 
 const Admin = React.createClass({
     getInitialState () {
         return {
-            backgrounds: [{
-                id: 1,
-                name: 'outside_1.jpg'
-            }, {
-                id: 2,
-                name: 'inside_1.jpg'
-            }],
-            cars: [{
-                id: 1,
-                name: 'inside_1.jpg'
-            }],
+            backgrounds: [],
+            cars: [],
             confirmationModalBody: '',
             confirmationModalHeader: '',
             handleModalConfirmation: () => 0,
             objectToRemove: {},
             showConfirmationModal: false,
-            songs: [{
-                id: 1,
-                name: 'Pink Floyd - Hey You',
-                url: 'http://song'
-            }, {
-                id: 2,
-                name: 'Pink Floyd - Money',
-                url: 'http://song'
-            }, {
-                id: 3,
-                name: 'Pink Floyd - Wish You Were Here',
-                url: 'http://song'
-            }]
+            songs: []
         };
+    },
+
+    componentDidMount () {
+        BackgroundsApi.getAll()
+            .then(response => {
+                this.setState({
+                    backgrounds: response
+                });
+            })
+            .catch(error => {
+                alert('Api error ' + error);
+            });
+
+        CarsApi.getAll()
+            .then(response => {
+                this.setState({
+                    cars: response
+                });
+            })
+            .catch(error => {
+                alert('Api error ' + error);
+            });
+
+        SongsApi.getAll()
+            .then(response => {
+                this.setState({
+                    songs: response
+                });
+            })
+            .catch(error => {
+                alert('Api error ' + error);
+            });
     },
 
     imageContainerStyle: {
@@ -60,12 +74,12 @@ const Admin = React.createClass({
         position: 'relative'
     },
 
-    showRemoveCarModal (id, name) {
+    showRemoveCarModal (name) {
         this.setState({
             confirmationModalBody: `Do you really want to remove ${name}?`,
             confirmationModalHeader: `Remove ${name}`,
             handleModalConfirmation: this.handleCarRemove,
-            objectToRemove: { id: id },
+            objectToRemove: { name: name },
             showConfirmationModal: true
         });
     },
@@ -73,7 +87,7 @@ const Admin = React.createClass({
     handleCarRemove () {
         var cars = _.clone(this.state.cars, true);
 
-        _.remove(cars, {id: this.state.objectToRemove.id});
+        _.remove(cars, {name: this.state.objectToRemove.name});
 
         this.setState({
             cars: cars,
@@ -81,12 +95,12 @@ const Admin = React.createClass({
         });
     },
 
-    showRemoveBackgroundModal (id, name) {
+    showRemoveBackgroundModal (name) {
         this.setState({
             confirmationModalBody: `Do you really want to remove ${name}?`,
             confirmationModalHeader: `Remove ${name}`,
             handleModalConfirmation: this.handleBackgroundRemove,
-            objectToRemove: { id: id },
+            objectToRemove: { name: name },
             showConfirmationModal: true
         });
     },
@@ -94,7 +108,7 @@ const Admin = React.createClass({
     handleBackgroundRemove () {
         var backgrounds = _.clone(this.state.backgrounds, true);
 
-        _.remove(backgrounds, {id: this.state.objectToRemove.id});
+        _.remove(backgrounds, {name: this.state.objectToRemove.name});
 
         this.setState({
             backgrounds: backgrounds,
@@ -102,12 +116,12 @@ const Admin = React.createClass({
         });
     },
 
-    showRemoveSongModal (id, name) {
+    showRemoveSongModal (name) {
         this.setState({
             confirmationModalBody: `Do you really want to remove ${name}?`,
             confirmationModalHeader: `Remove ${name}`,
             handleModalConfirmation: this.handleSongRemove,
-            objectToRemove: { id: id },
+            objectToRemove: { name: name },
             showConfirmationModal: true
         });
     },
@@ -148,11 +162,11 @@ const Admin = React.createClass({
                             <Panel header={<span><Glyphicon glyph="road" />{' Cars'}</span>}>
                                 {
                                     this.state.cars.map(car => (
-                                        <div key={car.id} style={this.imageContainerStyle}>
-                                            <img src={'../public/' + car.name} style={this.imageStyle}/>
+                                        <div key={car} style={this.imageContainerStyle}>
+                                            <img src={'../public/cars/' + car} style={this.imageStyle}/>
                                             <Button
                                                 bsStyle="danger"
-                                                onClick={this.showRemoveCarModal.bind(this, car.id, car.name)}
+                                                onClick={this.showRemoveCarModal.bind(this, car)}
                                                 style={this.deleteButtonStyle}
                                             >
                                                 <Glyphicon glyph="remove" />
@@ -167,11 +181,11 @@ const Admin = React.createClass({
                             <Panel header={<span><Glyphicon glyph="picture" />{' Backgrounds'}</span>}>
                                 {
                                     this.state.backgrounds.map(background => (
-                                        <div key={background.id} style={this.imageContainerStyle}>
-                                            <img src={'../public/' + background.name} style={this.imageStyle}/>
+                                        <div key={background} style={this.imageContainerStyle}>
+                                            <img src={'../public/backgrounds/' + background} style={this.imageStyle}/>
                                             <Button
                                                 bsStyle="danger"
-                                                onClick={this.showRemoveBackgroundModal.bind(this, background.id, background.name)}
+                                                onClick={this.showRemoveBackgroundModal.bind(this, background)}
                                                 style={this.deleteButtonStyle}
                                             >
                                                 <Glyphicon glyph="remove" />
