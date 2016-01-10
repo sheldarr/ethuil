@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import { Button, Col, Glyphicon, Grid, Nav, Navbar, NavItem, Panel, Row, Table } from 'react-bootstrap';
 
+import ConfirmationModal from './ConfirmationModal';
 import ImageDropzone from './ImageDropzone';
 
 const Admin = React.createClass({
@@ -15,6 +16,11 @@ const Admin = React.createClass({
             cars: [{
                 name: 'inside_1.jpg'
             }],
+            confirmationModalBody: '',
+            confirmationModalHeader: '',
+            handleModalConfirmation: () => 0,
+            objectToRemove: {},
+            showConfirmationModal: false,
             songs: [{
                 id: 1,
                 name: 'Pink Floyd - Hey You',
@@ -49,6 +55,33 @@ const Admin = React.createClass({
         position: 'relative'
     },
 
+    showRemoveSongModal (id, name) {
+        this.setState({
+            confirmationModalBody: `Do you really want to remove ${name}`,
+            confirmationModalHeader: `Remove ${name}`,
+            handleModalConfirmation: this.handleSongRemove,
+            objectToRemove: { id: id },
+            showConfirmationModal: true
+        });
+    },
+
+    handleSongRemove () {
+        var songs = _.clone(this.state.songs, true);
+
+        _.remove(songs, {id: this.state.objectToRemove.id});
+
+        this.setState({
+            showConfirmationModal: false,
+            songs: songs
+        });
+    },
+
+    handleModalDismiss () {
+        this.setState({
+            showConfirmationModal: false
+        });
+    },
+
     handleCarRemove (name) {
         var cars = _.clone(this.state.cars, true);
 
@@ -66,16 +99,6 @@ const Admin = React.createClass({
 
         this.setState({
             backgrounds: backgrounds
-        });
-    },
-
-    handleSongRemove (id) {
-        var songs = _.clone(this.state.songs, true);
-
-        _.remove(songs, {id: id});
-
-        this.setState({
-            songs: songs
         });
     },
 
@@ -147,7 +170,7 @@ const Admin = React.createClass({
                                                 </td>
                                                 <td>
                                                     <div className="pull-right">
-                                                        <Button bsStyle="danger" onClick={this.handleSongRemove.bind(this, song.id)}>
+                                                        <Button bsStyle="danger" onClick={this.showRemoveSongModal.bind(this, song.id, song.name)}>
                                                             <Glyphicon glyph="remove" />
                                                         </Button>
                                                     </div>
@@ -161,6 +184,13 @@ const Admin = React.createClass({
                         </Col>
                     </Row>
                 </Grid>
+                <ConfirmationModal
+                    body={this.state.confirmationModalBody}
+                    header={this.state.confirmationModalHeader}
+                    onConfirmation={this.state.handleModalConfirmation}
+                    onDismiss={this.handleModalDismiss}
+                    show={this.state.showConfirmationModal}
+                />
             </div>
         );
     }
