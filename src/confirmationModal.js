@@ -21,7 +21,7 @@ const ConfirmationModal = React.createClass({
 
     render () {
         return (
-            <Modal onHide={this.handleClose} show={this.props.show}>
+            <Modal onHide={this.handleDismiss} show={this.props.show}>
                 <Modal.Header closeButton>
                     <Modal.Title>{this.props.header}</Modal.Title>
                 </Modal.Header>
