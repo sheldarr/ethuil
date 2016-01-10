@@ -17,10 +17,10 @@ const ImageDropzone = React.createClass({
         borderRadius: '5px',
         borderStyle: 'dashed',
         borderWidth: '2px',
-        display: 'inline-block',
+        float: 'left',
         height: '128px',
-        margin: '0 1%',
-        width: '46%'
+        margin: '1% 1%',
+        width: '48%'
     },
 
     uploadGlyphiconStyle: {

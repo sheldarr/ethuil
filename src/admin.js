@@ -13,6 +13,9 @@ const Admin = React.createClass({
             backgrounds: [{
                 id: 1,
                 name: 'outside_1.jpg'
+            }, {
+                id: 2,
+                name: 'inside_1.jpg'
             }],
             cars: [{
                 id: 1,
@@ -40,10 +43,10 @@ const Admin = React.createClass({
     },
 
     imageContainerStyle: {
-        display: 'inline-block',
+        float: 'left',
         height: '128px',
-        margin: '0 1%',
-        width: '46%'
+        margin: '1% 1%',
+        width: '48%'
     },
 
     imageStyle: {
