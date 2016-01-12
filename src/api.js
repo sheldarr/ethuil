@@ -47,7 +47,6 @@ const handleErrors = function (req, res, action) {
     try {
         action();
     } catch (error) {
-        console.log('myerror');
         console.log(error.toString());
         res.sendStatus(500);
     }
