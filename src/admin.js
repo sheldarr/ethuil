@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import { Button, Col, Glyphicon, Grid, Nav, Navbar, NavItem, Panel, Row, Table } from 'react-bootstrap';
 
+import AddSong from './AddSong';
 import BackgroundsApi from './BackgroundsApi';
 import CarsApi from './CarsApi';
 import ConfirmationModal from './ConfirmationModal';
@@ -264,7 +265,7 @@ const Admin = React.createClass({
                                         )}
                                     </tbody>
                                 </Table>
-                                <Button block bsStyle="success"><Glyphicon glyph="plus"/>{' Add new song'}</Button>
+                                <AddSong />
                             </Panel>
                         </Col>
                     </Row>
