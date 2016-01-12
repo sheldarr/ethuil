@@ -5,7 +5,29 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
 const multer = require('multer');
-const upload = multer({ dest: './public' });
+const path = require('path');
+
+const backgroundStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/backgrounds');
+    },
+    filename: function (req, file, cb) {
+        cb(null, `background_${Date.now()}.${path.extname(file.fieldname)}`);
+    }
+});
+
+const backgroundUpload = multer({ storage: backgroundStorage });
+
+const carStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/cars');
+    },
+    filename: function (req, file, cb) {
+        cb(null, `car_${Date.now()}.${path.extname(file.fieldname)}`);
+    }
+});
+
+const carUpload = multer({ storage: carStorage });
 
 const app = express();
 const port = 3033;
@@ -26,6 +48,24 @@ router.get('/', function (req, res) {
     res.sendStatus(200);
 });
 
+router.get('/background', function (req, res) {
+    console.log('GET: /background');
+
+    fs.readdir('./public/backgrounds', function (err, files) {
+        if (err) {
+            console.log(err);
+        }
+
+        res.json(files);
+    });
+});
+
+router.post('/background', backgroundUpload.any(), function (req, res) {
+    console.log('POST: /background');
+
+    res.sendStatus(200);
+});
+
 router.get('/car', function (req, res) {
     console.log('GET: /car');
 
@@ -38,24 +78,10 @@ router.get('/car', function (req, res) {
     });
 });
 
-router.post('/car', upload.any(), function (req, res) {
+router.post('/car', carUpload.any(), function (req, res) {
     console.log('POST: /car');
 
-    let car =  _.first(req.files);
-
     res.sendStatus(200);
-});
-
-router.get('/background', function (req, res) {
-    console.log('GET: /background');
-
-    fs.readdir('./public/backgrounds', function (err, files) {
-        if (err) {
-            console.log(err);
-        }
-
-        res.json(files);
-    });
 });
 
 router.get('/song', function (req, res) {
