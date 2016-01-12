@@ -47,91 +47,99 @@ const handleErrors = function (req, res, action) {
     try {
         action();
     } catch (error) {
+        console.log('myerror');
         console.log(error.toString());
         res.sendStatus(500);
-        return;
     }
-
-    res.sendStatus(200);
 };
 
 router.get('/', function (req, res) {
     console.log('GET: /');
 
-    handleErrors(req, res, () => {});
+    handleErrors(req, res, () => { res.sendStatus(200); });
 });
 
 router.get('/background', function (req, res) {
     console.log('GET: /background');
 
-    fs.readdir('./public/backgrounds', function (err, files) {
-        if (err) {
-            console.log(err);
-        }
+    handleErrors(req, res, () => {
+        fs.readdir('./public/backgrounds', function (err, files) {
+            if (err) {
+                throw err;
+            }
 
-        res.json(files);
+            res.json(files);
+        });
     });
 });
 
 router.post('/background', backgroundUpload.any(), function (req, res) {
     console.log('POST: /background');
 
-    res.sendStatus(200);
+    handleErrors(req, res, () => { res.sendStatus(200); });
 });
 
 router.delete('/background', function (req, res) {
     console.log(`DELETE: /background ${JSON.stringify(req.body)}`);
 
-    fs.unlink(`./public/backgrounds/${req.body.name}`, (err) => {
-        if (err) {
-            console.log('ERROR', err);
-        }
-    });
+    handleErrors(req, res, () => {
+        fs.unlink(`./public/backgrounds/${req.body.name}`, (err) => {
+            if (err) {
+                throw err;
+            }
+        });
 
-    res.sendStatus(200);
+        res.sendStatus(200);
+    });
 });
 
 router.get('/car', function (req, res) {
     console.log('GET: /car');
 
-    fs.readdir('./public/cars', function (err, files) {
-        if (err) {
-            console.log(err);
-        }
+    handleErrors(req, res, () => {
+        fs.readdir('./public/cars', function (err, files) {
+            if (err) {
+                throw err;
+            }
 
-        res.json(files);
+            res.json(files);
+        });
     });
 });
 
 router.post('/car', carUpload.any(), function (req, res) {
     console.log('POST: /car');
 
-    res.sendStatus(200);
+    handleErrors(req, res, () => { res.sendStatus(200); });
 });
 
 router.delete('/car', function (req, res) {
     console.log(`DELETE: /car ${JSON.stringify(req.body)}`);
 
-    fs.unlink(`./public/cars/${req.body.name}`, (err) => {
-        if (err) {
-            console.log('ERROR', err);
-        }
-    });
+    handleErrors(req, res, () => {
+        fs.unlink(`./public/cars/${req.body.name}`, (err) => {
+            if (err) {
+                throw err;
+            }
+        });
 
-    res.sendStatus(200);
+        res.sendStatus(200);
+    });
 });
 
 router.get('/song', function (req, res) {
     console.log('GET: /song');
 
-    fs.readFile('./public/songs.json', 'utf8', function (err, data) {
-        if (err) {
-            console.log(err);
-        }
+    handleErrors(req, res, () => {
+        fs.readFile('./public/songs.json', 'utf8', function (err, data) {
+            if (err) {
+                throw err;
+            }
 
-        var songs = JSON.parse(data);
+            var songs = JSON.parse(data);
 
-        res.json(songs);
+            res.json(songs);
+        });
     });
 });
 
