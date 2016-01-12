@@ -1,13 +1,28 @@
 import React from 'react';
 import { Button, Col, Glyphicon, Input, Modal, Row } from 'react-bootstrap';
 
+import SongsApi from './SongsApi';
+
 const AddSong = React.createClass({
-    getInitialState: function () {
+    propTypes: {
+        onDismiss: React.PropTypes.func,
+        onSuccess: React.PropTypes.func.isRequired
+    },
+
+    getInitialState () {
         return {
             name: '',
             showModal: false,
             url: ''
         };
+    },
+
+    componentDidMount () {
+        this.setState({
+            name: '',
+            showModal: false,
+            url: ''
+        });
     },
 
     handleShowingModal () {
@@ -17,6 +32,10 @@ const AddSong = React.createClass({
     },
 
     handleDismiss () {
+        if (this.props.onDismiss) {
+            this.props.onDismiss();
+        }
+
         this.setState({
             showModal: false
         });
@@ -31,6 +50,17 @@ const AddSong = React.createClass({
     handleUrlChange (event) {
         this.setState({
             url: event.target.value
+        });
+    },
+
+    handleSongAdding () {
+        SongsApi.create({
+            name: this.state.name,
+            url: this.state.url
+        }).then(response => {
+            this.props.onSuccess();
+        }).catch(error => {
+            alert('Api error ' + error);
         });
     },
 

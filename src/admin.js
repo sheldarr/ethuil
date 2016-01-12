@@ -176,6 +176,10 @@ const Admin = React.createClass({
             });
     },
 
+    handleSongAdding () {
+        this.downloadRequiredData();
+    },
+
     render () {
         return (
             <div>
@@ -265,7 +269,7 @@ const Admin = React.createClass({
                                         )}
                                     </tbody>
                                 </Table>
-                                <AddSong />
+                                <AddSong onSuccess={this.handleSongAdding}/>
                             </Panel>
                         </Col>
                     </Row>

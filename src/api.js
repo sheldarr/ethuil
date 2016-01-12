@@ -142,6 +142,29 @@ router.get('/song', function (req, res) {
     });
 });
 
+router.post('/song', function (req, res) {
+    console.log(`POST: /song ${JSON.stringify(req.body)}`);
+
+    handleErrors(req, res, () => {
+        fs.readFile('./public/songs.json', 'utf8', function (err, data) {
+            if (err) {
+                throw err;
+            }
+
+            var songs = JSON.parse(data);
+
+            var newId = _.max(songs, 'id').id + 1;
+            req.body.id = newId;
+
+            songs.push(req.body);
+
+            fs.writeFile('./public/songs.json', JSON.stringify(songs));
+
+            res.sendStatus(200);
+        });
+    });
+});
+
 app.use('/', router);
 app.listen(port);
 
