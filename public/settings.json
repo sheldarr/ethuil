@@ -1,6 +1,3 @@
 {
-    "lastBackgroundId": 1,
-    "lastCarId": 1,
-    "apiPath": "",
-    "apiPort": 3033
+    "apiUrl": "http://localhost:3033/car"
 }

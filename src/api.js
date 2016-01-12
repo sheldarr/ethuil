@@ -12,7 +12,7 @@ const backgroundStorage = multer.diskStorage({
         cb(null, './public/backgrounds');
     },
     filename: function (req, file, cb) {
-        cb(null, `background_${Date.now()}.${path.extname(file.fieldname)}`);
+        cb(null, `background_${Date.now()}${path.extname(file.fieldname)}`);
     }
 });
 
@@ -23,7 +23,7 @@ const carStorage = multer.diskStorage({
         cb(null, './public/cars');
     },
     filename: function (req, file, cb) {
-        cb(null, `car_${Date.now()}.${path.extname(file.fieldname)}`);
+        cb(null, `car_${Date.now()}${path.extname(file.fieldname)}`);
     }
 });
 
@@ -66,6 +66,18 @@ router.post('/background', backgroundUpload.any(), function (req, res) {
     res.sendStatus(200);
 });
 
+router.delete('/background', function (req, res) {
+    console.log(`DELETE: /background ${JSON.stringify(req.body)}`);
+
+    fs.unlink(`./public/backgrounds/${req.body.name}`, (err) => {
+        if (err) {
+            console.log('ERROR', err);
+        }
+    });
+
+    res.sendStatus(200);
+});
+
 router.get('/car', function (req, res) {
     console.log('GET: /car');
 
@@ -80,6 +92,18 @@ router.get('/car', function (req, res) {
 
 router.post('/car', carUpload.any(), function (req, res) {
     console.log('POST: /car');
+
+    res.sendStatus(200);
+});
+
+router.delete('/car', function (req, res) {
+    console.log(`DELETE: /car ${JSON.stringify(req.body)}`);
+
+    fs.unlink(`./public/cars/${req.body.name}`, (err) => {
+        if (err) {
+            console.log('ERROR', err);
+        }
+    });
 
     res.sendStatus(200);
 });

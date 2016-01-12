@@ -25,8 +25,13 @@ const Admin = React.createClass({
     },
 
     componentDidMount () {
+        this.downloadRequiredData();
+    },
+
+    downloadRequiredData () {
         BackgroundsApi.getAll()
             .then(response => {
+                console.log(response);
                 this.setState({
                     backgrounds: response
                 });
@@ -37,6 +42,7 @@ const Admin = React.createClass({
 
         CarsApi.getAll()
             .then(response => {
+                console.log(response);
                 this.setState({
                     cars: response
                 });
@@ -74,27 +80,6 @@ const Admin = React.createClass({
         position: 'relative'
     },
 
-    showRemoveCarModal (name) {
-        this.setState({
-            confirmationModalBody: `Do you really want to remove ${name}?`,
-            confirmationModalHeader: `Remove ${name}`,
-            handleModalConfirmation: this.handleCarRemove,
-            objectToRemove: { name: name },
-            showConfirmationModal: true
-        });
-    },
-
-    handleCarRemove () {
-        var cars = _.clone(this.state.cars, true);
-
-        _.remove(cars, {name: this.state.objectToRemove.name});
-
-        this.setState({
-            cars: cars,
-            showConfirmationModal: false
-        });
-    },
-
     showRemoveBackgroundModal (name) {
         this.setState({
             confirmationModalBody: `Do you really want to remove ${name}?`,
@@ -106,12 +91,39 @@ const Admin = React.createClass({
     },
 
     handleBackgroundRemove () {
-        var backgrounds = _.clone(this.state.backgrounds, true);
-
-        _.remove(backgrounds, {name: this.state.objectToRemove.name});
+        BackgroundsApi.delete(this.state.objectToRemove.name)
+            .then(response => {
+                this.downloadRequiredData();
+            })
+            .catch(error => {
+                alert('Api error ' + error);
+            });
 
         this.setState({
-            backgrounds: backgrounds,
+            showConfirmationModal: false
+        });
+    },
+
+    showRemoveCarModal (name) {
+        this.setState({
+            confirmationModalBody: `Do you really want to remove ${name}?`,
+            confirmationModalHeader: `Remove ${name}`,
+            handleModalConfirmation: this.handleCarRemove,
+            objectToRemove: { name: name },
+            showConfirmationModal: true
+        });
+    },
+
+    handleCarRemove () {
+        CarsApi.delete(this.state.objectToRemove.name)
+            .then(response => {
+                this.downloadRequiredData();
+            })
+            .catch(error => {
+                alert('Api error ' + error);
+            });
+
+        this.setState({
             showConfirmationModal: false
         });
     },
@@ -144,11 +156,9 @@ const Admin = React.createClass({
     },
 
     handleCarDrop (car) {
-        console.log('Drop', car);
-
         CarsApi.create(car)
             .then(response => {
-                console.log(response);
+                this.downloadRequiredData();
             })
             .catch(error => {
                 alert('Api error ' + error);
@@ -156,7 +166,13 @@ const Admin = React.createClass({
     },
 
     handleBackgroundDrop (background) {
-        console.log('Drop', background);
+        BackgroundsApi.create(background)
+            .then(response => {
+                this.downloadRequiredData();
+            })
+            .catch(error => {
+                alert('Api error ' + error);
+            });
     },
 
     render () {
