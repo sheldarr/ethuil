@@ -43,9 +43,22 @@ app.use(function (req, res, next) {
     next();
 });
 
+const handleErrors = function (req, res, action) {
+    try {
+        action();
+    } catch (error) {
+        console.log(error.toString());
+        res.sendStatus(500);
+        return;
+    }
+
+    res.sendStatus(200);
+};
+
 router.get('/', function (req, res) {
     console.log('GET: /');
-    res.sendStatus(200);
+
+    handleErrors(req, res, () => {});
 });
 
 router.get('/background', function (req, res) {
