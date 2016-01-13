@@ -1,11 +1,13 @@
 import React from 'react';
+import { Col, Grid, Row } from 'react-bootstrap';
 
-import Background from './background';
+import Background from './Background';
+import SongsApi from './SongsApi';
 
 const Playlist = React.createClass({
     getInitialState () {
         return {
-            contentStyle: {
+            playlistStyle: {
                 background: 'white',
                 boxShadow: '0 0 20px black',
                 marginLeft: '58%',
@@ -19,20 +21,47 @@ const Playlist = React.createClass({
                 maxWidth: '100%',
                 position: 'fixed',
                 top: 0
-            }
+            },
+            songs: []
         };
+    },
+
+    componentDidMount () {
+        this.downloadSongs();
+
+        Background.set('url');
+    },
+
+    downloadSongs () {
+        SongsApi.getAll()
+            .then(response => {
+                this.setState({
+                    songs: response
+                });
+            })
+            .catch(error => {
+                alert(error);
+            });
     },
 
     render () {
         return (
-            <div>
-                <Background/>
-                <div style={this.state.contentStyle}>
-                    <p>{"Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus"}</p>
-                    <p>{"Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus"}</p>
-                    <p>{"Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p><p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus"}</p>
-                </div>
-            </div>
+            <Grid style={this.state.playlistStyle}>
+                {this.state.songs.map(song =>
+                    <div key={song.id}>
+                        <Row>
+                            <Col xs={12}>
+                                <div>{`${song.id}.${song.name}`}</div>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12}>
+                                <div>{song.url}</div>
+                            </Col>
+                        </Row>
+                    </div>
+                )}
+            </Grid>
         );
     }
 });

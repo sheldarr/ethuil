@@ -1,7 +1,5 @@
 import React from 'react';
 
-import _ from 'lodash';
-
 import { Button, Col, Glyphicon, Grid, Nav, Navbar, NavItem, Panel, Row, Table } from 'react-bootstrap';
 
 import AddSong from './AddSong';

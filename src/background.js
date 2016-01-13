@@ -1,27 +1,15 @@
-import React from 'react';
 import _ from 'lodash';
 
-const Background = React.createClass({
-    propTypes: {
-        url: React.PropTypes.string.isRequired
-    },
+const Background = {
+    set (url) {
+        var body = _.first(document.getElementsByTagName('body'));
 
-    getInitialState () {
-        return {
-            html: _.first(document.getElementsByTagName('html'))
-        };
-    },
-
-    componentDidMount () {
-        var html = _.first(document.getElementsByTagName('html'));
-
-        html.style.background = 'url(../public/inside_1.jpg) no-repeat center center fixed';
-        html.style.backgroundSize = 'cover';
-    },
-
-    render () {
-        return <div></div>;
+        body.style.backgroundAttachment = 'fixed';
+        body.style.backgroundImage = 'url(../public/cars/insidetransparent_1.png), url(../public/backgrounds/outside_1.jpg)';
+        body.style.backgroundPosition = 'center center';
+        body.style.backgroundRepeat = ' repeat-x, repeat';
+        body.style.backgroundSize = 'cover';
     }
-});
+};
 
 export default Background;
