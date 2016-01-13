@@ -60,7 +60,11 @@ const AddSong = React.createClass({
         }).then(response => {
             this.props.onSuccess();
         }).catch(error => {
-            alert('Api error ' + error);
+            alert(error);
+        });
+
+        this.setState({
+            showModal: false
         });
     },
 
