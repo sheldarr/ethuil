@@ -26,10 +26,12 @@ const Admin = React.createClass({
     },
 
     componentDidMount () {
-        this.downloadRequiredData();
+        this.downloadBackgrounds();
+        this.downloadCars();
+        this.downloadSongs();
     },
 
-    downloadRequiredData () {
+    downloadBackgrounds () {
         BackgroundsApi.getAll()
             .then(response => {
                 this.setState({
@@ -39,7 +41,9 @@ const Admin = React.createClass({
             .catch(error => {
                 alert(error);
             });
+    },
 
+    downloadCars () {
         CarsApi.getAll()
             .then(response => {
                 this.setState({
@@ -49,7 +53,9 @@ const Admin = React.createClass({
             .catch(error => {
                 alert(error);
             });
+    },
 
+    downloadSongs () {
         SongsApi.getAll()
             .then(response => {
                 this.setState({
@@ -92,7 +98,7 @@ const Admin = React.createClass({
     handleBackgroundRemove () {
         BackgroundsApi.delete(this.state.objectToRemove.name)
             .then(response => {
-                this.downloadRequiredData();
+                this.downloadBackgrounds();
             })
             .catch(error => {
                 alert('Api error ' + error);
@@ -116,7 +122,7 @@ const Admin = React.createClass({
     handleCarRemove () {
         CarsApi.delete(this.state.objectToRemove.name)
             .then(response => {
-                this.downloadRequiredData();
+                this.downloadCars();
             })
             .catch(error => {
                 alert('Api error ' + error);
@@ -157,7 +163,7 @@ const Admin = React.createClass({
     handleCarDrop (car) {
         CarsApi.create(car)
             .then(response => {
-                this.downloadRequiredData();
+                this.downloadCars();
             })
             .catch(error => {
                 alert('Api error ' + error);
@@ -167,7 +173,7 @@ const Admin = React.createClass({
     handleBackgroundDrop (background) {
         BackgroundsApi.create(background)
             .then(response => {
-                this.downloadRequiredData();
+                this.downloadBackgrounds();
             })
             .catch(error => {
                 alert('Api error ' + error);
@@ -175,7 +181,7 @@ const Admin = React.createClass({
     },
 
     handleSongAdding () {
-        this.downloadRequiredData();
+        this.downloadSongs();
     },
 
     render () {
