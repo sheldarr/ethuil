@@ -101,7 +101,7 @@ const Admin = React.createClass({
                 this.downloadBackgrounds();
             })
             .catch(error => {
-                alert('Api error ' + error);
+                alert(error);
             });
 
         this.setState({
@@ -125,7 +125,7 @@ const Admin = React.createClass({
                 this.downloadCars();
             })
             .catch(error => {
-                alert('Api error ' + error);
+                alert(error);
             });
 
         this.setState({
@@ -133,24 +133,27 @@ const Admin = React.createClass({
         });
     },
 
-    showRemoveSongModal (name) {
+    showRemoveSongModal (id, name) {
         this.setState({
             confirmationModalBody: `Do you really want to remove ${name}?`,
             confirmationModalHeader: `Remove ${name}`,
             handleModalConfirmation: this.handleSongRemove,
-            objectToRemove: { name: name },
+            objectToRemove: { id: id },
             showConfirmationModal: true
         });
     },
 
     handleSongRemove () {
-        var songs = _.clone(this.state.songs, true);
-
-        _.remove(songs, {id: this.state.objectToRemove.id});
+        SongsApi.delete(this.state.objectToRemove.id)
+            .then(response => {
+                this.downloadSongs();
+            })
+            .catch(error => {
+                alert(error);
+            });
 
         this.setState({
-            showConfirmationModal: false,
-            songs: songs
+            showConfirmationModal: false
         });
     },
 
@@ -166,7 +169,7 @@ const Admin = React.createClass({
                 this.downloadCars();
             })
             .catch(error => {
-                alert('Api error ' + error);
+                alert(error);
             });
     },
 
@@ -176,7 +179,7 @@ const Admin = React.createClass({
                 this.downloadBackgrounds();
             })
             .catch(error => {
-                alert('Api error ' + error);
+                alert(error);
             });
     },
 

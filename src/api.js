@@ -178,9 +178,31 @@ router.post('/song', function (req, res) {
                 var songs = JSON.parse(data);
 
                 var newId = _.max(songs, 'id').id + 1;
-                req.body.id = newId;
+                var newSong = {id: newId, name: req.body.name, url: req.body.url};
 
-                songs.push(req.body);
+                songs.push(newSong);
+
+                fs.writeFile('./public/songs.json', JSON.stringify(songs));
+
+                resolve({statusCode: 200, data: {}});
+            });
+        });
+    });
+});
+
+router.delete('/song/:id', function (req, res) {
+    console.log(`DELETE: /song/${req.params.id}`);
+
+    handleErrors(req, res, () => {
+        return new Promise((resolve, reject) => {
+            fs.readFile('./public/songs.json', 'utf8', function (err, data) {
+                if (err) {
+                    reject(err);
+                }
+
+                var songs = JSON.parse(data);
+
+                _.remove(songs, song => song.id === parseInt(req.params.id, 10));
 
                 fs.writeFile('./public/songs.json', JSON.stringify(songs));
 
