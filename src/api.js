@@ -44,30 +44,37 @@ app.use(function (req, res, next) {
 });
 
 const handleErrors = function (req, res, action) {
-    try {
-        action();
-    } catch (error) {
-        console.log(error.toString());
+    action().then((result) => {
+        console.log('OK', result);
+        res.status(result.statusCode).json(result.data);
+    }).catch((error) => {
+        console.log('ERROR', error);
         res.sendStatus(500);
-    }
+    });
 };
 
 router.get('/', function (req, res) {
     console.log('GET: /');
 
-    handleErrors(req, res, () => { res.sendStatus(200); });
+    handleErrors(req, res, () => {
+        return new Promise((resolve, reject) => {
+            resolve({statusCode: 200, data: {}});
+        });
+    });
 });
 
 router.get('/background', function (req, res) {
     console.log('GET: /background');
 
     handleErrors(req, res, () => {
-        fs.readdir('./public/backgrounds', function (err, files) {
-            if (err) {
-                throw err;
-            }
+        return new Promise((resolve, reject) => {
+            fs.readdir('./public/backgrounds', function (err, files) {
+                if (err) {
+                    reject(err);
+                }
 
-            res.json(files);
+                resolve({statusCode: 200, data: files});
+            });
         });
     });
 });
@@ -75,20 +82,26 @@ router.get('/background', function (req, res) {
 router.post('/background', backgroundUpload.any(), function (req, res) {
     console.log('POST: /background');
 
-    handleErrors(req, res, () => { res.sendStatus(200); });
+    handleErrors(req, res, () => {
+        return new Promise((resolve, reject) => {
+            resolve({statusCode: 200, data: {}});
+        });
+    });
 });
 
 router.delete('/background', function (req, res) {
     console.log(`DELETE: /background ${JSON.stringify(req.body)}`);
 
     handleErrors(req, res, () => {
-        fs.unlink(`./public/backgrounds/${req.body.name}`, (err) => {
-            if (err) {
-                throw err;
-            }
-        });
+        return new Promise((resolve, reject) => {
+            fs.unlink(`./public/backgrounds/${req.body.name}`, (err) => {
+                if (err) {
+                    reject(err);
+                }
 
-        res.sendStatus(200);
+                resolve({statusCode: 200, data: {}});
+            });
+        });
     });
 });
 
@@ -96,12 +109,14 @@ router.get('/car', function (req, res) {
     console.log('GET: /car');
 
     handleErrors(req, res, () => {
-        fs.readdir('./public/cars', function (err, files) {
-            if (err) {
-                throw err;
-            }
+        return new Promise((resolve, reject) => {
+            fs.readdir('./public/cars', function (err, files) {
+                if (err) {
+                    reject(err);
+                }
 
-            res.json(files);
+                resolve({statusCode: 200, data: files});
+            });
         });
     });
 });
@@ -109,20 +124,26 @@ router.get('/car', function (req, res) {
 router.post('/car', carUpload.any(), function (req, res) {
     console.log('POST: /car');
 
-    handleErrors(req, res, () => { res.sendStatus(200); });
+    handleErrors(req, res, () => {
+        return new Promise((resolve, reject) => {
+            resolve({statusCode: 200, data: {}});
+        });
+    });
 });
 
 router.delete('/car', function (req, res) {
     console.log(`DELETE: /car ${JSON.stringify(req.body)}`);
 
     handleErrors(req, res, () => {
-        fs.unlink(`./public/cars/${req.body.name}`, (err) => {
-            if (err) {
-                throw err;
-            }
-        });
+        return new Promise((resolve, reject) => {
+            fs.unlink(`./public/cars/${req.body.name}`, (err) => {
+                if (err) {
+                    reject(err);
+                }
 
-        res.sendStatus(200);
+                resolve({statusCode: 200, data: {}});
+            });
+        });
     });
 });
 
@@ -130,14 +151,16 @@ router.get('/song', function (req, res) {
     console.log('GET: /song');
 
     handleErrors(req, res, () => {
-        fs.readFile('./public/songs.json', 'utf8', function (err, data) {
-            if (err) {
-                throw err;
-            }
+        return new Promise((resolve, reject) => {
+            fs.readFile('./public/songs.json', 'utf8', function (err, data) {
+                if (err) {
+                    reject(err);
+                }
 
-            var songs = JSON.parse(data);
+                var songs = JSON.parse(data);
 
-            res.json(songs);
+                resolve({statusCode: 200, data: songs});
+            });
         });
     });
 });
@@ -146,21 +169,23 @@ router.post('/song', function (req, res) {
     console.log(`POST: /song ${JSON.stringify(req.body)}`);
 
     handleErrors(req, res, () => {
-        fs.readFile('./public/songs.json', 'utf8', function (err, data) {
-            if (err) {
-                throw err;
-            }
+        return new Promise((resolve, reject) => {
+            fs.readFile('./public/songs.json', 'utf8', function (err, data) {
+                if (err) {
+                    reject(err);
+                }
 
-            var songs = JSON.parse(data);
+                var songs = JSON.parse(data);
 
-            var newId = _.max(songs, 'id').id + 1;
-            req.body.id = newId;
+                var newId = _.max(songs, 'id').id + 1;
+                req.body.id = newId;
 
-            songs.push(req.body);
+                songs.push(req.body);
 
-            fs.writeFile('./public/songs.json', JSON.stringify(songs));
+                fs.writeFile('./public/songs.json', JSON.stringify(songs));
 
-            res.sendStatus(200);
+                resolve({statusCode: 200, data: {}});
+            });
         });
     });
 });

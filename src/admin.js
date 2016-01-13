@@ -32,24 +32,22 @@ const Admin = React.createClass({
     downloadRequiredData () {
         BackgroundsApi.getAll()
             .then(response => {
-                console.log(response);
                 this.setState({
                     backgrounds: response
                 });
             })
             .catch(error => {
-                alert('Api error ' + error);
+                alert(error);
             });
 
         CarsApi.getAll()
             .then(response => {
-                console.log(response);
                 this.setState({
                     cars: response
                 });
             })
             .catch(error => {
-                alert('Api error ' + error);
+                alert(error);
             });
 
         SongsApi.getAll()
@@ -59,7 +57,7 @@ const Admin = React.createClass({
                 });
             })
             .catch(error => {
-                alert('Api error ' + error);
+                alert(error);
             });
     },
 
