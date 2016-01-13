@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Grid, Row } from 'react-bootstrap';
+import { Button, Col, Glyphicon, Grid, Row } from 'react-bootstrap';
 
 import Background from './Background';
 import SongsApi from './SongsApi';
@@ -12,6 +12,8 @@ const Playlist = React.createClass({
                 boxShadow: '0 0 20px black',
                 marginLeft: '58%',
                 marginTop: '17%',
+                maxHeight: '40%',
+                overflowY: 'scroll',
                 padding: '20px',
                 position: 'fixed',
                 width: '22%'
@@ -44,21 +46,32 @@ const Playlist = React.createClass({
             });
     },
 
+    openSongInNewTab (url) {
+        let tab = window.open(url, '_blank');
+        tab.focus();
+    },
+
     render () {
         return (
             <Grid style={this.state.playlistStyle}>
+                <Row style={{marginBottom: '10px'}}>
+                    <Col xs={12}>
+                        <Glyphicon glyph="music" style={{marginRight: '10px'}}/><strong>{'Playlist'}</strong>
+                    </Col>
+                </Row>
                 {this.state.songs.map(song =>
                     <div key={song.id}>
                         <Row>
-                            <Col xs={12}>
+                            <Col xs={10}>
                                 <div>{`${song.id}.${song.name}`}</div>
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={12}>
-                                <div>{song.url}</div>
+                            <Col xs={2}>
+                                <Button bsStyle="success" onClick={this.openSongInNewTab.bind(this, song.url)}>
+                                    <Glyphicon glyph="play" />
+                                </Button>
                             </Col>
                         </Row>
+                        <br/>
                     </div>
                 )}
             </Grid>
