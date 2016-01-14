@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
+import { Button, Glyphicon, Panel, Table } from 'react-bootstrap';
 
 import Background from './Background';
+import Configuration from './Configuration';
 import SongsApi from './SongsApi';
 
 const Playlist = React.createClass({
@@ -44,29 +45,32 @@ const Playlist = React.createClass({
 
     render () {
         return (
-            <Panel
-                collapsible
-                defaultExpanded
-                header={<span><Glyphicon glyph="music" style={{marginRight: '10px'}}/><strong>{'Playlist'}</strong></span>}
-                style={this.state.playlistStyle}
-            >
-                <Table fill hover striped>
-                    <thead>
-                    </thead>
-                    <tbody>
-                        {this.state.songs.map(song =>
-                            <tr key={song.id}>
-                                <td>
-                                    <span>{`${song.id}. ${song.name}`}</span>
-                                    <Button bsStyle="success" onClick={this.openSongInNewTab.bind(this, song.url)} style={{float: 'right'}}>
-                                        <Glyphicon glyph="play" />
-                                    </Button>
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </Table>
-             </Panel>
+            <div>
+                <Configuration/>
+                <Panel
+                    collapsible
+                    defaultExpanded
+                    header={<span><Glyphicon glyph="music" style={{marginRight: '10px'}}/><strong>{'Playlist'}</strong></span>}
+                    style={this.state.playlistStyle}
+                >
+                    <Table fill hover striped>
+                        <thead>
+                        </thead>
+                        <tbody>
+                            {this.state.songs.map(song =>
+                                <tr key={song.id}>
+                                    <td>
+                                        <span>{`${song.id}. ${song.name}`}</span>
+                                        <Button bsStyle="success" onClick={this.openSongInNewTab.bind(this, song.url)} style={{float: 'right'}}>
+                                            <Glyphicon glyph="play" />
+                                        </Button>
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </Table>
+                 </Panel>
+            </div>
         );
     }
 });

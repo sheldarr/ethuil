@@ -202,39 +202,35 @@ const Admin = React.createClass({
                     <Row>
                         <Col xs={6}>
                             <Panel header={<span><Glyphicon glyph="road" />{' Cars'}</span>}>
-                                {
-                                    this.state.cars.map(car => (
-                                        <div key={car} style={this.imageContainerStyle}>
-                                            <img src={'../public/cars/' + car} style={this.imageStyle}/>
-                                            <Button
-                                                bsStyle="danger"
-                                                onClick={this.showRemoveCarModal.bind(this, car)}
-                                                style={this.deleteButtonStyle}
-                                            >
-                                                <Glyphicon glyph="remove" />
-                                            </Button>
-                                        </div>
-                                    ))
-                                }
+                                {this.state.cars.map(car => (
+                                    <div key={car} style={this.imageContainerStyle}>
+                                        <img src={'../public/cars/' + car} style={this.imageStyle}/>
+                                        <Button
+                                            bsStyle="danger"
+                                            onClick={this.showRemoveCarModal.bind(this, car)}
+                                            style={this.deleteButtonStyle}
+                                        >
+                                            <Glyphicon glyph="remove" />
+                                        </Button>
+                                    </div>
+                                ))}
                                 <ImageDropzone onDrop={this.handleCarDrop}/>
                             </Panel>
                         </Col>
                         <Col xs={6}>
                             <Panel header={<span><Glyphicon glyph="picture" />{' Backgrounds'}</span>}>
-                                {
-                                    this.state.backgrounds.map(background => (
-                                        <div key={background} style={this.imageContainerStyle}>
-                                            <img src={'../public/backgrounds/' + background} style={this.imageStyle}/>
-                                            <Button
-                                                bsStyle="danger"
-                                                onClick={this.showRemoveBackgroundModal.bind(this, background)}
-                                                style={this.deleteButtonStyle}
-                                            >
-                                                <Glyphicon glyph="remove" />
-                                            </Button>
-                                        </div>
-                                    ))
-                                }
+                                {this.state.backgrounds.map(background => (
+                                    <div key={background} style={this.imageContainerStyle}>
+                                        <img src={'../public/backgrounds/' + background} style={this.imageStyle}/>
+                                        <Button
+                                            bsStyle="danger"
+                                            onClick={this.showRemoveBackgroundModal.bind(this, background)}
+                                            style={this.deleteButtonStyle}
+                                        >
+                                            <Glyphicon glyph="remove" />
+                                        </Button>
+                                    </div>
+                                ))}
                                 <ImageDropzone onDrop={this.handleBackgroundDrop}/>
                             </Panel>
                         </Col>
