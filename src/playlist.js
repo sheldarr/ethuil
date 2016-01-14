@@ -1,13 +1,20 @@
+import _ from 'lodash';
 import React from 'react';
 import { Button, Glyphicon, Panel, Table } from 'react-bootstrap';
 
 import Background from './Background';
 import Configuration from './Configuration';
+import BackgroundsApi from './BackgroundsApi';
+import CarsApi from './CarsApi';
 import SongsApi from './SongsApi';
 
 const Playlist = React.createClass({
     getInitialState () {
         return {
+            background: '',
+            backgrounds: [],
+            car: '',
+            cars: [],
             playlistStyle: {
                 left: '60%',
                 maxHeight: '50%',
@@ -20,10 +27,44 @@ const Playlist = React.createClass({
         };
     },
 
-    componentDidMount () {
+    componentWillMount () {
+        this.downloadBackgrounds();
+        this.downloadCars();
         this.downloadSongs();
+    },
 
-        Background.set('url');
+    downloadBackgrounds () {
+        BackgroundsApi.getAll()
+            .then(response => {
+                if (!localStorage.getItem('background')) {
+                    localStorage.setItem('background', _.first(response));
+                }
+
+                this.setState({
+                    background: localStorage.getItem('background'),
+                    backgrounds: response
+                });
+            })
+            .catch(error => {
+                alert(error);
+            });
+    },
+
+    downloadCars () {
+        CarsApi.getAll()
+            .then(response => {
+                if (!localStorage.getItem('car')) {
+                    localStorage.setItem('car', _.first(response));
+                }
+
+                this.setState({
+                    car: localStorage.getItem('car'),
+                    cars: response
+                });
+            })
+            .catch(error => {
+                alert(error);
+            });
     },
 
     downloadSongs () {
@@ -43,10 +84,30 @@ const Playlist = React.createClass({
         tab.focus();
     },
 
+    handleConfigurationSaving (selectedBackground, selectedCar) {
+        localStorage.setItem('background', selectedBackground);
+        localStorage.setItem('car', selectedCar);
+
+        this.setState({
+            background: selectedBackground,
+            car: selectedCar
+        });
+    },
+
     render () {
         return (
             <div>
-                <Configuration/>
+                <Background
+                    background={this.state.background}
+                    car={this.state.car}
+                />
+                <Configuration
+                    background={this.state.background}
+                    backgrounds={this.state.backgrounds}
+                    car={this.state.car}
+                    cars={this.state.cars}
+                    onSave={this.handleConfigurationSaving}
+                />
                 <Panel
                     collapsible
                     defaultExpanded
