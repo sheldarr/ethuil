@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Glyphicon, Grid, Row } from 'react-bootstrap';
+import { Button, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
 
 import Background from './Background';
 import SongsApi from './SongsApi';
@@ -8,21 +8,12 @@ const Playlist = React.createClass({
     getInitialState () {
         return {
             playlistStyle: {
-                background: 'white',
-                boxShadow: '0 0 20px black',
-                marginLeft: '58%',
-                marginTop: '17%',
-                maxHeight: '40%',
+                left: '60%',
+                maxHeight: '50%',
                 overflowY: 'scroll',
-                padding: '20px',
                 position: 'fixed',
-                width: '22%'
-            },
-            imageStyle: {
-                left: 0,
-                maxWidth: '100%',
-                position: 'fixed',
-                top: 0
+                top: '30%',
+                width: '25%'
             },
             songs: []
         };
@@ -53,28 +44,29 @@ const Playlist = React.createClass({
 
     render () {
         return (
-            <Grid style={this.state.playlistStyle}>
-                <Row style={{marginBottom: '10px'}}>
-                    <Col xs={12}>
-                        <Glyphicon glyph="music" style={{marginRight: '10px'}}/><strong>{'Playlist'}</strong>
-                    </Col>
-                </Row>
-                {this.state.songs.map(song =>
-                    <div key={song.id}>
-                        <Row>
-                            <Col xs={10}>
-                                <div>{`${song.id}.${song.name}`}</div>
-                            </Col>
-                            <Col xs={2}>
-                                <Button bsStyle="success" onClick={this.openSongInNewTab.bind(this, song.url)}>
-                                    <Glyphicon glyph="play" />
-                                </Button>
-                            </Col>
-                        </Row>
-                        <br/>
-                    </div>
-                )}
-            </Grid>
+            <Panel
+                collapsible
+                defaultExpanded
+                header={<span><Glyphicon glyph="music" style={{marginRight: '10px'}}/><strong>{'Playlist'}</strong></span>}
+                style={this.state.playlistStyle}
+            >
+                <Table fill hover striped>
+                    <thead>
+                    </thead>
+                    <tbody>
+                        {this.state.songs.map(song =>
+                            <tr key={song.id}>
+                                <td>
+                                    <span>{`${song.id}. ${song.name}`}</span>
+                                    <Button bsStyle="success" onClick={this.openSongInNewTab.bind(this, song.url)} style={{float: 'right'}}>
+                                        <Glyphicon glyph="play" />
+                                    </Button>
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </Table>
+             </Panel>
         );
     }
 });
