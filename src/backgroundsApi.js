@@ -4,7 +4,7 @@ const BackgroundsApi = {
     getAll () {
         return new Promise((resolve, reject) => {
             Request
-               .get('http://localhost:3033/background')
+               .get('http://178.62.6.112:3033/background')
                .end((err, res) => {
                    if (err) {
                        console.log(err);
@@ -22,7 +22,7 @@ const BackgroundsApi = {
     create (background) {
         return new Promise((resolve, reject) => {
             Request
-                .post('http://localhost:3033/background')
+                .post('http://178.62.6.112:3033/background')
                 .attach(background.name, background)
                 .end((err, res) => {
                     if (err) {
@@ -41,7 +41,7 @@ const BackgroundsApi = {
     delete (name) {
         return new Promise((resolve, reject) => {
             Request
-                .del(`http://localhost:3033/background`)
+                .del(`http://178.62.6.112:3033/background`)
                 .send({name: name})
                 .end((err, res) => {
                     if (err) {

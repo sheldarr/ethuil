@@ -1,36 +1,37 @@
 {
-    "name": "Ethuil",
-    "version": "1.0.0",
-    "scripts": {
-        "api": "node ./src/api.js",
-        "transpile": "browserify ./src/index.js -o ./bin/bundle.js -t [ babelify --presets [ es2015 react ] ]"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/sheldarr/Ethuil.git"
-    },
-    "author": "Kewin Polok",
-    "license": "Apache License Version 2.0",
-    "bugs": {
-        "url": "https://github.com/sheldarr/Ethuil/issues"
-    },
-    "homepage": "https://github.com/sheldarr/Ethuil",
-    "devDependencies": {
-        "babel-preset-es2015": "^6.0.15",
-        "babel-preset-react": "^6.0.15",
-        "babelify": "^7.2.0",
-        "body-parser": "^1.14.2",
-        "express": "^4.13.3",
-        "multer": "^1.1.0"
-    },
-    "dependencies": {
-        "history": "^1.17.0",
-        "lodash": "^3.10.1",
-        "react": "^0.14.0",
-        "react-bootstrap": "^0.28.1",
-        "react-dom": "^0.14.0",
-        "react-dropzone": "^3.3.0",
-        "react-router": "^1.0.3",
-        "superagent": "^1.6.1"
-    }
+  "name": "Ethuil",
+  "version": "1.0.0",
+  "scripts": {
+    "api": "node ./src/api.js",
+    "transpile": "browserify ./src/index.js -o ./bin/bundle.js -t [ babelify --presets [ es2015 react ] ]"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sheldarr/Ethuil.git"
+  },
+  "author": "Kewin Polok",
+  "license": "Apache License Version 2.0",
+  "bugs": {
+    "url": "https://github.com/sheldarr/Ethuil/issues"
+  },
+  "homepage": "https://github.com/sheldarr/Ethuil",
+  "devDependencies": {
+    "babel-eslint": "^5.0.0-beta6",
+    "babel-preset-es2015": "^6.0.15",
+    "babel-preset-react": "^6.0.15",
+    "babelify": "^7.2.0",
+    "body-parser": "^1.14.2",
+    "express": "^4.13.3",
+    "multer": "^1.1.0"
+  },
+  "dependencies": {
+    "history": "^1.17.0",
+    "lodash": "^3.10.1",
+    "react": "^0.14.0",
+    "react-bootstrap": "^0.28.1",
+    "react-dom": "^0.14.0",
+    "react-dropzone": "^3.3.0",
+    "react-router": "^1.0.3",
+    "superagent": "^1.6.1"
+  }
 }

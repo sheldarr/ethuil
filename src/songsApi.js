@@ -4,7 +4,7 @@ const SongsApi = {
     getAll () {
         return new Promise((resolve, reject) => {
             Request
-               .get('http://localhost:3033/song')
+               .get('http://178.62.6.112:3033/song')
                .end((err, res) => {
                    if (err) {
                        console.log(err);
@@ -22,7 +22,7 @@ const SongsApi = {
     create (song) {
         return new Promise((resolve, reject) => {
             Request
-                .post('http://localhost:3033/song')
+                .post('http://178.62.6.112:3030/song')
                 .send(song)
                 .end((err, res) => {
                     if (err) {
@@ -41,7 +41,7 @@ const SongsApi = {
     delete (id) {
         return new Promise((resolve, reject) => {
             Request
-                .del(`http://localhost:3033/song/${id}`)
+                .del(`http://178.62.6.112:3033/song/${id}`)
                 .end((err, res) => {
                     if (err) {
                         console.log(err);

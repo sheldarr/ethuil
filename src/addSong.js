@@ -17,7 +17,7 @@ const AddSong = React.createClass({
         };
     },
 
-    componentDidMount () {
+    componentWillMount () {
         this.setState({
             name: '',
             showModal: false,
