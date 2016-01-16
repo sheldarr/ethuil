@@ -25,6 +25,7 @@
     "express": "^4.13.3",
     "multer": "^1.1.0",
     "react-hot-loader": "^1.3.0",
+    "streamsearch": "^0.1.2",
     "webpack": "^1.12.2",
     "webpack-dev-server": "^1.12.1"
   },
