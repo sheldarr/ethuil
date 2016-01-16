@@ -15,17 +15,12 @@
   },
   "homepage": "https://github.com/sheldarr/Ethuil",
   "devDependencies": {
-    "babel-eslint": "^4.1.3",
-    "babel-loader": "^6.0.1",
     "babel-preset-es2015": "^6.0.15",
     "babel-preset-react": "^6.0.15",
-    "babel-preset-stage-0": "^6.0.15",
+    "babelify": "^7.2.0",
     "body-parser": "^1.14.2",
     "express": "^4.13.3",
-    "multer": "^1.1.0",
-    "react-hot-loader": "^1.3.0",
-    "webpack": "^1.12.11",
-    "webpack-dev-server": "^1.12.1"
+    "multer": "^1.1.0"
   },
   "dependencies": {
     "history": "^1.17.0",
