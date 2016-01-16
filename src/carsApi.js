@@ -1,3 +1,4 @@
+import Promise from 'promise-polyfill';
 import Request from 'superagent';
 
 const CarsApi = {
