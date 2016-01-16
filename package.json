@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "api": "node ./src/api.js",
-    "transpile": "browserify ./src/index.js -o ./bin/bundle.js -t [ babelify --presets [ es2015 react ] ]"
+    "transpile": "browserify ./src/index.js -o ./public/bundle.js -t [ babelify --presets [ es2015 react ] ]"
   },
   "repository": {
     "type": "git",

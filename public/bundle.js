@@ -53075,7 +53075,7 @@ var AddSong = _react2.default.createClass({
             url: ''
         };
     },
-    componentDidMount: function componentDidMount() {
+    componentWillMount: function componentWillMount() {
         this.setState({
             name: '',
             showModal: false,
@@ -53251,7 +53251,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var BackgroundsApi = {
     getAll: function getAll() {
         return new Promise(function (resolve, reject) {
-            _superagent2.default.get('http://localhost:3033/background').end(function (err, res) {
+            _superagent2.default.get('http://178.62.6.112:3033/background').end(function (err, res) {
                 if (err) {
                     console.log(err);
                 }
@@ -53266,7 +53266,7 @@ var BackgroundsApi = {
     },
     create: function create(background) {
         return new Promise(function (resolve, reject) {
-            _superagent2.default.post('http://localhost:3033/background').attach(background.name, background).end(function (err, res) {
+            _superagent2.default.post('http://178.62.6.112:3033/background').attach(background.name, background).end(function (err, res) {
                 if (err) {
                     console.log(err);
                 }
@@ -53281,7 +53281,7 @@ var BackgroundsApi = {
     },
     delete: function _delete(name) {
         return new Promise(function (resolve, reject) {
-            _superagent2.default.del('http://localhost:3033/background').send({ name: name }).end(function (err, res) {
+            _superagent2.default.del('http://178.62.6.112:3033/background').send({ name: name }).end(function (err, res) {
                 if (err) {
                     console.log(err);
                 }
@@ -53314,7 +53314,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var CarsApi = {
     getAll: function getAll() {
         return new Promise(function (resolve, reject) {
-            _superagent2.default.get('http://localhost:3033/car').end(function (err, res) {
+            _superagent2.default.get('http://178.62.6.112:3033/car').end(function (err, res) {
                 if (err) {
                     console.log(err);
                 }
@@ -53329,7 +53329,7 @@ var CarsApi = {
     },
     create: function create(car) {
         return new Promise(function (resolve, reject) {
-            _superagent2.default.post('http://localhost:3033/car').attach(car.name, car).end(function (err, res) {
+            _superagent2.default.post('http://178.62.6.112:3033/car').attach(car.name, car).end(function (err, res) {
                 if (err) {
                     console.log(err);
                 }
@@ -53344,7 +53344,7 @@ var CarsApi = {
     },
     delete: function _delete(name) {
         return new Promise(function (resolve, reject) {
-            _superagent2.default.del('http://localhost:3033/car').send({ name: name }).end(function (err, res) {
+            _superagent2.default.del('http://178.62.6.112:3033/car').send({ name: name }).end(function (err, res) {
                 if (err) {
                     console.log(err);
                 }
@@ -53727,7 +53727,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var SongsApi = {
     getAll: function getAll() {
         return new Promise(function (resolve, reject) {
-            _superagent2.default.get('http://localhost:3033/song').end(function (err, res) {
+            _superagent2.default.get('http://178.62.6.112:3033/song').end(function (err, res) {
                 if (err) {
                     console.log(err);
                 }
@@ -53742,7 +53742,7 @@ var SongsApi = {
     },
     create: function create(song) {
         return new Promise(function (resolve, reject) {
-            _superagent2.default.post('http://localhost:3033/song').send(song).end(function (err, res) {
+            _superagent2.default.post('http://178.62.6.112:3030/song').send(song).end(function (err, res) {
                 if (err) {
                     console.log(err);
                 }
@@ -53757,7 +53757,7 @@ var SongsApi = {
     },
     delete: function _delete(id) {
         return new Promise(function (resolve, reject) {
-            _superagent2.default.del('http://localhost:3033/song/' + id).end(function (err, res) {
+            _superagent2.default.del('http://178.62.6.112:3033/song/' + id).end(function (err, res) {
                 if (err) {
                     console.log(err);
                 }
