@@ -30,7 +30,8 @@
     "streamsearch": "^0.1.2",
     "tapable": "^0.2.2",
     "webpack": "^1.12.11",
-    "webpack-dev-server": "^1.12.1"
+    "webpack-dev-server": "^1.12.1",
+    "websocket-driver": "^0.6.4"
   },
   "dependencies": {
     "deep-equal": "^1.0.1",
