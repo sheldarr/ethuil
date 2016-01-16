@@ -2,7 +2,7 @@
   "name": "Ethuil",
   "version": "1.0.0",
   "scripts": {
-    "start": "http-server -p 3030",
+    "start": "",
     "transpile": "browserify ./src/index.js -o ./bin/bundle.js -t [ babelify --presets [ es2015 react ] ]"
   },
   "repository": {
