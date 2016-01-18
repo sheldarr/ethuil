@@ -6,6 +6,15 @@ const express = require('express');
 const fs = require('fs');
 const multer = require('multer');
 const path = require('path');
+const process = require('process');
+const winston = require('winston');
+
+var logger = new (winston.Logger)({
+    transports: [
+        new (winston.transports.Console)(),
+        new (winston.transports.File)({ filename: 'api.log' })
+    ]
+});
 
 const backgroundStorage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -37,25 +46,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(function (req, res, next) {
+    logger.info(`${req.method} ${req.originalUrl} ${req.ip}`);
+
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,HEAD,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'content-Type,x-requested-with');
+
     next();
 });
 
 const handleErrors = function (req, res, action) {
     action().then((result) => {
-        console.log('OK', result);
         res.status(result.statusCode).json(result.data);
     }).catch((error) => {
-        console.log('ERROR', error);
+        logger.error(`PID ${process.pid} ${error}`);
         res.sendStatus(500);
     });
 };
 
 router.get('/', function (req, res) {
-    console.log('GET: /');
-
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
             resolve({statusCode: 200, data: {}});
@@ -64,8 +73,6 @@ router.get('/', function (req, res) {
 });
 
 router.get('/background', function (req, res) {
-    console.log('GET: /background');
-
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
             fs.readdir('./public/backgrounds', function (err, files) {
@@ -80,8 +87,6 @@ router.get('/background', function (req, res) {
 });
 
 router.post('/background', backgroundUpload.any(), function (req, res) {
-    console.log('POST: /background');
-
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
             resolve({statusCode: 200, data: {}});
@@ -90,8 +95,6 @@ router.post('/background', backgroundUpload.any(), function (req, res) {
 });
 
 router.delete('/background', function (req, res) {
-    console.log(`DELETE: /background ${JSON.stringify(req.body)}`);
-
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
             fs.unlink(`./public/backgrounds/${req.body.name}`, (err) => {
@@ -106,8 +109,6 @@ router.delete('/background', function (req, res) {
 });
 
 router.get('/car', function (req, res) {
-    console.log('GET: /car');
-
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
             fs.readdir('./public/cars', function (err, files) {
@@ -122,8 +123,6 @@ router.get('/car', function (req, res) {
 });
 
 router.post('/car', carUpload.any(), function (req, res) {
-    console.log('POST: /car');
-
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
             resolve({statusCode: 200, data: {}});
@@ -132,8 +131,6 @@ router.post('/car', carUpload.any(), function (req, res) {
 });
 
 router.delete('/car', function (req, res) {
-    console.log(`DELETE: /car ${JSON.stringify(req.body)}`);
-
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
             fs.unlink(`./public/cars/${req.body.name}`, (err) => {
@@ -148,8 +145,6 @@ router.delete('/car', function (req, res) {
 });
 
 router.get('/song', function (req, res) {
-    console.log('GET: /song');
-
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
             fs.readFile('./public/songs.json', 'utf8', function (err, data) {
@@ -166,8 +161,6 @@ router.get('/song', function (req, res) {
 });
 
 router.post('/song', function (req, res) {
-    console.log(`POST: /song ${JSON.stringify(req.body)}`);
-
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
             fs.readFile('./public/songs.json', 'utf8', function (err, data) {
@@ -191,8 +184,6 @@ router.post('/song', function (req, res) {
 });
 
 router.delete('/song/:id', function (req, res) {
-    console.log(`DELETE: /song/${req.params.id}`);
-
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
             fs.readFile('./public/songs.json', 'utf8', function (err, data) {
@@ -213,6 +204,6 @@ router.delete('/song/:id', function (req, res) {
 });
 
 app.use('/', router);
-app.listen(port);
-
-console.log('Api is running on port: ' + port);
+app.listen(port, () => {
+    logger.info(`PID ${process.pid} Api is running on port: ${port}`);
+});
