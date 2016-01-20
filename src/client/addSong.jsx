@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Col, Glyphicon, Input, Modal, Row } from 'react-bootstrap';
 
-import SongsApi from './SongsApi';
+import SongsApi from './songsApi.jsx';
 
 const AddSong = React.createClass({
     propTypes: {

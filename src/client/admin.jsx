@@ -2,12 +2,12 @@ import React from 'react';
 
 import { Button, Col, Glyphicon, Grid, Nav, Navbar, NavItem, Panel, Row, Table } from 'react-bootstrap';
 
-import AddSong from './AddSong';
-import BackgroundsApi from './BackgroundsApi';
-import CarsApi from './CarsApi';
-import ConfirmationModal from './ConfirmationModal';
-import ImageDropzone from './ImageDropzone';
-import SongsApi from './SongsApi';
+import AddSong from './addSong.jsx';
+import BackgroundsApi from './backgroundsApi.jsx';
+import CarsApi from './carsApi.jsx';
+import ConfirmationModal from './confirmationModal.jsx';
+import ImageDropzone from './imageDropzone.jsx';
+import SongsApi from './songsApi.jsx';
 
 const Admin = React.createClass({
     getInitialState () {

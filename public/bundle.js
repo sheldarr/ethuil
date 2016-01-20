@@ -297,7 +297,7 @@ function mixin(obj) {
 Emitter.prototype.on =
 Emitter.prototype.addEventListener = function(event, fn){
   this._callbacks = this._callbacks || {};
-  (this._callbacks[event] = this._callbacks[event] || [])
+  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
     .push(fn);
   return this;
 };
@@ -313,11 +313,8 @@ Emitter.prototype.addEventListener = function(event, fn){
  */
 
 Emitter.prototype.once = function(event, fn){
-  var self = this;
-  this._callbacks = this._callbacks || {};
-
   function on() {
-    self.off(event, on);
+    this.off(event, on);
     fn.apply(this, arguments);
   }
 
@@ -349,12 +346,12 @@ Emitter.prototype.removeEventListener = function(event, fn){
   }
 
   // specific event
-  var callbacks = this._callbacks[event];
+  var callbacks = this._callbacks['$' + event];
   if (!callbacks) return this;
 
   // remove all handlers
   if (1 == arguments.length) {
-    delete this._callbacks[event];
+    delete this._callbacks['$' + event];
     return this;
   }
 
@@ -381,7 +378,7 @@ Emitter.prototype.removeEventListener = function(event, fn){
 Emitter.prototype.emit = function(event){
   this._callbacks = this._callbacks || {};
   var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks[event];
+    , callbacks = this._callbacks['$' + event];
 
   if (callbacks) {
     callbacks = callbacks.slice(0);
@@ -403,7 +400,7 @@ Emitter.prototype.emit = function(event){
 
 Emitter.prototype.listeners = function(event){
   this._callbacks = this._callbacks || {};
-  return this._callbacks[event] || [];
+  return this._callbacks['$' + event] || [];
 };
 
 /**
@@ -52472,26 +52469,15 @@ Request.prototype.field = function(name, val){
 
 Request.prototype.attach = function(field, file, filename){
   if (!this._formData) this._formData = new root.FormData();
-  this._formData.append(field, file, filename);
+  this._formData.append(field, file, filename || file.name);
   return this;
 };
 
 /**
- * Send `data`, defaulting the `.type()` to "json" when
+ * Send `data` as the request body, defaulting the `.type()` to "json" when
  * an object is given.
  *
  * Examples:
- *
- *       // querystring
- *       request.get('/search')
- *         .end(callback)
- *
- *       // multiple data "writes"
- *       request.get('/search')
- *         .send({ search: 'query' })
- *         .send({ range: '1..5' })
- *         .send({ order: 'desc' })
- *         .end(callback)
  *
  *       // manual json
  *       request.post('/user')
@@ -52657,6 +52643,7 @@ Request.prototype.end = function(fn){
     if (e.total > 0) {
       e.percent = e.loaded / e.total * 100;
     }
+    e.direction = 'download';
     self.emit('progress', e);
   };
   if (this.hasListeners('progress')) {
@@ -52818,8 +52805,8 @@ function del(url, fn){
   return req;
 };
 
-request.del = del;
-request.delete = del;
+request['del'] = del;
+request['delete'] = del;
 
 /**
  * PATCH `url` with optional `data` and callback `fn(res)`.
@@ -53250,9 +53237,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactBootstrap = require('react-bootstrap');
 
-var _SongsApi = require('./SongsApi');
+var _songsApi = require('./songsApi.jsx');
 
-var _SongsApi2 = _interopRequireDefault(_SongsApi);
+var _songsApi2 = _interopRequireDefault(_songsApi);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -53305,7 +53292,7 @@ var AddSong = _react2.default.createClass({
     handleSongAdding: function handleSongAdding() {
         var _this = this;
 
-        _SongsApi2.default.create({
+        _songsApi2.default.create({
             name: this.state.name,
             url: this.state.url
         }).then(function (response) {
@@ -53390,7 +53377,439 @@ var AddSong = _react2.default.createClass({
 
 exports.default = AddSong;
 
-},{"./SongsApi":462,"react":447,"react-bootstrap":258}],456:[function(require,module,exports){
+},{"./songsApi.jsx":467,"react":447,"react-bootstrap":258}],456:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactBootstrap = require('react-bootstrap');
+
+var _addSong = require('./addSong.jsx');
+
+var _addSong2 = _interopRequireDefault(_addSong);
+
+var _backgroundsApi = require('./backgroundsApi.jsx');
+
+var _backgroundsApi2 = _interopRequireDefault(_backgroundsApi);
+
+var _carsApi = require('./carsApi.jsx');
+
+var _carsApi2 = _interopRequireDefault(_carsApi);
+
+var _confirmationModal = require('./confirmationModal.jsx');
+
+var _confirmationModal2 = _interopRequireDefault(_confirmationModal);
+
+var _imageDropzone = require('./imageDropzone.jsx');
+
+var _imageDropzone2 = _interopRequireDefault(_imageDropzone);
+
+var _songsApi = require('./songsApi.jsx');
+
+var _songsApi2 = _interopRequireDefault(_songsApi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Admin = _react2.default.createClass({
+    displayName: 'Admin',
+    getInitialState: function getInitialState() {
+        return {
+            backgrounds: [],
+            cars: [],
+            confirmationModalBody: '',
+            confirmationModalHeader: '',
+            handleModalConfirmation: function handleModalConfirmation() {
+                return 0;
+            },
+            objectToRemove: {},
+            showConfirmationModal: false,
+            songs: []
+        };
+    },
+    componentDidMount: function componentDidMount() {
+        this.downloadBackgrounds();
+        this.downloadCars();
+        this.downloadSongs();
+    },
+    downloadBackgrounds: function downloadBackgrounds() {
+        var _this = this;
+
+        _backgroundsApi2.default.getAll().then(function (response) {
+            _this.setState({
+                backgrounds: response
+            });
+        }).catch(function (error) {
+            alert(error);
+        });
+    },
+    downloadCars: function downloadCars() {
+        var _this2 = this;
+
+        _carsApi2.default.getAll().then(function (response) {
+            _this2.setState({
+                cars: response
+            });
+        }).catch(function (error) {
+            alert(error);
+        });
+    },
+    downloadSongs: function downloadSongs() {
+        var _this3 = this;
+
+        _songsApi2.default.getAll().then(function (response) {
+            _this3.setState({
+                songs: response
+            });
+        }).catch(function (error) {
+            alert(error);
+        });
+    },
+
+    imageContainerStyle: {
+        float: 'left',
+        height: '128px',
+        margin: '1% 1%',
+        width: '48%'
+    },
+
+    imageStyle: {
+        height: '100%',
+        width: '100%'
+    },
+
+    deleteButtonStyle: {
+        bottom: '90%',
+        left: '80%',
+        position: 'relative'
+    },
+
+    showRemoveBackgroundModal: function showRemoveBackgroundModal(name) {
+        this.setState({
+            confirmationModalBody: 'Do you really want to remove ' + name + '?',
+            confirmationModalHeader: 'Remove ' + name,
+            handleModalConfirmation: this.handleBackgroundRemove,
+            objectToRemove: { name: name },
+            showConfirmationModal: true
+        });
+    },
+    handleBackgroundRemove: function handleBackgroundRemove() {
+        var _this4 = this;
+
+        _backgroundsApi2.default.delete(this.state.objectToRemove.name).then(function (response) {
+            _this4.downloadBackgrounds();
+        }).catch(function (error) {
+            alert(error);
+        });
+
+        this.setState({
+            showConfirmationModal: false
+        });
+    },
+    showRemoveCarModal: function showRemoveCarModal(name) {
+        this.setState({
+            confirmationModalBody: 'Do you really want to remove ' + name + '?',
+            confirmationModalHeader: 'Remove ' + name,
+            handleModalConfirmation: this.handleCarRemove,
+            objectToRemove: { name: name },
+            showConfirmationModal: true
+        });
+    },
+    handleCarRemove: function handleCarRemove() {
+        var _this5 = this;
+
+        _carsApi2.default.delete(this.state.objectToRemove.name).then(function (response) {
+            _this5.downloadCars();
+        }).catch(function (error) {
+            alert(error);
+        });
+
+        this.setState({
+            showConfirmationModal: false
+        });
+    },
+    showRemoveSongModal: function showRemoveSongModal(id, name) {
+        this.setState({
+            confirmationModalBody: 'Do you really want to remove ' + name + '?',
+            confirmationModalHeader: 'Remove ' + name,
+            handleModalConfirmation: this.handleSongRemove,
+            objectToRemove: { id: id },
+            showConfirmationModal: true
+        });
+    },
+    handleSongRemove: function handleSongRemove() {
+        var _this6 = this;
+
+        _songsApi2.default.delete(this.state.objectToRemove.id).then(function (response) {
+            _this6.downloadSongs();
+        }).catch(function (error) {
+            alert(error);
+        });
+
+        this.setState({
+            showConfirmationModal: false
+        });
+    },
+    handleModalDismiss: function handleModalDismiss() {
+        this.setState({
+            showConfirmationModal: false
+        });
+    },
+    handleCarDrop: function handleCarDrop(car) {
+        var _this7 = this;
+
+        _carsApi2.default.create(car).then(function (response) {
+            _this7.downloadCars();
+        }).catch(function (error) {
+            alert(error);
+        });
+    },
+    handleBackgroundDrop: function handleBackgroundDrop(background) {
+        var _this8 = this;
+
+        _backgroundsApi2.default.create(background).then(function (response) {
+            _this8.downloadBackgrounds();
+        }).catch(function (error) {
+            alert(error);
+        });
+    },
+    handleSongAdding: function handleSongAdding() {
+        this.downloadSongs();
+    },
+    render: function render() {
+        var _this9 = this;
+
+        return _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+                _reactBootstrap.Navbar,
+                null,
+                _react2.default.createElement(
+                    _reactBootstrap.Navbar.Header,
+                    null,
+                    _react2.default.createElement(
+                        _reactBootstrap.Navbar.Brand,
+                        null,
+                        _react2.default.createElement(
+                            'a',
+                            { href: '#' },
+                            'Administrator Panel'
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    _reactBootstrap.Nav,
+                    null,
+                    _react2.default.createElement(
+                        _reactBootstrap.NavItem,
+                        { eventKey: 1, href: '#' },
+                        'Playlist'
+                    )
+                )
+            ),
+            _react2.default.createElement(
+                _reactBootstrap.Grid,
+                null,
+                _react2.default.createElement(
+                    _reactBootstrap.Row,
+                    null,
+                    _react2.default.createElement(
+                        _reactBootstrap.Col,
+                        { xs: 6 },
+                        _react2.default.createElement(
+                            _reactBootstrap.Panel,
+                            { header: _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'road' }),
+                                    ' Cars'
+                                ) },
+                            this.state.cars.map(function (car) {
+                                return _react2.default.createElement(
+                                    'div',
+                                    { key: car, style: _this9.imageContainerStyle },
+                                    _react2.default.createElement('img', { src: '../public/cars/' + car, style: _this9.imageStyle }),
+                                    _react2.default.createElement(
+                                        _reactBootstrap.Button,
+                                        {
+                                            bsStyle: 'danger',
+                                            onClick: _this9.showRemoveCarModal.bind(_this9, car),
+                                            style: _this9.deleteButtonStyle
+                                        },
+                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' })
+                                    )
+                                );
+                            }),
+                            _react2.default.createElement(_imageDropzone2.default, { onDrop: this.handleCarDrop })
+                        )
+                    ),
+                    _react2.default.createElement(
+                        _reactBootstrap.Col,
+                        { xs: 6 },
+                        _react2.default.createElement(
+                            _reactBootstrap.Panel,
+                            { header: _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'picture' }),
+                                    ' Backgrounds'
+                                ) },
+                            this.state.backgrounds.map(function (background) {
+                                return _react2.default.createElement(
+                                    'div',
+                                    { key: background, style: _this9.imageContainerStyle },
+                                    _react2.default.createElement('img', { src: '../public/backgrounds/' + background, style: _this9.imageStyle }),
+                                    _react2.default.createElement(
+                                        _reactBootstrap.Button,
+                                        {
+                                            bsStyle: 'danger',
+                                            onClick: _this9.showRemoveBackgroundModal.bind(_this9, background),
+                                            style: _this9.deleteButtonStyle
+                                        },
+                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' })
+                                    )
+                                );
+                            }),
+                            _react2.default.createElement(_imageDropzone2.default, { onDrop: this.handleBackgroundDrop })
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    _reactBootstrap.Row,
+                    null,
+                    _react2.default.createElement(
+                        _reactBootstrap.Col,
+                        { xs: 12 },
+                        _react2.default.createElement(
+                            _reactBootstrap.Panel,
+                            { header: _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'music' }),
+                                    ' Playlist'
+                                ) },
+                            _react2.default.createElement(
+                                _reactBootstrap.Table,
+                                { hover: true, striped: true },
+                                _react2.default.createElement(
+                                    'thead',
+                                    null,
+                                    _react2.default.createElement(
+                                        'tr',
+                                        null,
+                                        _react2.default.createElement(
+                                            'td',
+                                            null,
+                                            'Id'
+                                        ),
+                                        _react2.default.createElement(
+                                            'td',
+                                            null,
+                                            'Name'
+                                        ),
+                                        _react2.default.createElement(
+                                            'td',
+                                            null,
+                                            'URL'
+                                        ),
+                                        _react2.default.createElement('td', null)
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    'tbody',
+                                    null,
+                                    this.state.songs.map(function (song) {
+                                        return _react2.default.createElement(
+                                            'tr',
+                                            { key: song.id },
+                                            _react2.default.createElement(
+                                                'td',
+                                                null,
+                                                song.id
+                                            ),
+                                            _react2.default.createElement(
+                                                'td',
+                                                null,
+                                                song.name
+                                            ),
+                                            _react2.default.createElement(
+                                                'td',
+                                                null,
+                                                song.url
+                                            ),
+                                            _react2.default.createElement(
+                                                'td',
+                                                null,
+                                                _react2.default.createElement(
+                                                    'div',
+                                                    { className: 'pull-right' },
+                                                    _react2.default.createElement(
+                                                        _reactBootstrap.Button,
+                                                        { bsStyle: 'danger', onClick: _this9.showRemoveSongModal.bind(_this9, song.id, song.name) },
+                                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' })
+                                                    )
+                                                )
+                                            )
+                                        );
+                                    })
+                                )
+                            ),
+                            _react2.default.createElement(_addSong2.default, { onSuccess: this.handleSongAdding })
+                        )
+                    )
+                )
+            ),
+            _react2.default.createElement(_confirmationModal2.default, {
+                body: this.state.confirmationModalBody,
+                header: this.state.confirmationModalHeader,
+                onConfirmation: this.state.handleModalConfirmation,
+                onDismiss: this.handleModalDismiss,
+                show: this.state.showConfirmationModal
+            })
+        );
+    }
+});
+
+exports.default = Admin;
+
+},{"./addSong.jsx":455,"./backgroundsApi.jsx":459,"./carsApi.jsx":460,"./confirmationModal.jsx":462,"./imageDropzone.jsx":463,"./songsApi.jsx":467,"react":447,"react-bootstrap":258}],457:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Application = _react2.default.createClass({
+    displayName: 'Application',
+
+    propTypes: {
+        children: _react2.default.PropTypes.node
+    },
+
+    render: function render() {
+        return _react2.default.createElement(
+            'div',
+            null,
+            this.props.children
+        );
+    }
+});
+
+exports.default = Application;
+
+},{"react":447}],458:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53431,7 +53850,7 @@ var Background = _react2.default.createClass({
 
 exports.default = Background;
 
-},{"lodash":184,"react":447}],457:[function(require,module,exports){
+},{"lodash":184,"react":447}],459:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53498,7 +53917,7 @@ var BackgroundsApi = {
 
 exports.default = BackgroundsApi;
 
-},{"promise-polyfill":185,"superagent":450}],458:[function(require,module,exports){
+},{"promise-polyfill":185,"superagent":450}],460:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53565,7 +53984,7 @@ var CarsApi = {
 
 exports.default = CarsApi;
 
-},{"promise-polyfill":185,"superagent":450}],459:[function(require,module,exports){
+},{"promise-polyfill":185,"superagent":450}],461:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53771,7 +54190,7 @@ var Configuration = _react2.default.createClass({
 
 exports.default = Configuration;
 
-},{"react":447,"react-bootstrap":258}],460:[function(require,module,exports){
+},{"react":447,"react-bootstrap":258}],462:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53847,7 +54266,7 @@ var ConfirmationModal = _react2.default.createClass({
 
 exports.default = ConfirmationModal;
 
-},{"react":447,"react-bootstrap":258}],461:[function(require,module,exports){
+},{"react":447,"react-bootstrap":258}],463:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53915,7 +54334,265 @@ var ImageDropzone = _react2.default.createClass({
 
 exports.default = ImageDropzone;
 
-},{"lodash":184,"react":447,"react-bootstrap":258,"react-dropzone":270}],462:[function(require,module,exports){
+},{"lodash":184,"react":447,"react-bootstrap":258,"react-dropzone":270}],464:[function(require,module,exports){
+'use strict';
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _reactRouter = require('react-router');
+
+var _admin = require('./admin.jsx');
+
+var _admin2 = _interopRequireDefault(_admin);
+
+var _application = require('./application.jsx');
+
+var _application2 = _interopRequireDefault(_application);
+
+var _notFound = require('./notFound.jsx');
+
+var _notFound2 = _interopRequireDefault(_notFound);
+
+var _playlist = require('./playlist.jsx');
+
+var _playlist2 = _interopRequireDefault(_playlist);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_reactDom2.default.render(_react2.default.createElement(
+    _reactRouter.Router,
+    null,
+    _react2.default.createElement(
+        _reactRouter.Route,
+        { component: _application2.default, path: '/' },
+        _react2.default.createElement(_reactRouter.IndexRoute, { component: _playlist2.default }),
+        _react2.default.createElement(_reactRouter.Route, { component: _admin2.default, path: 'admin' }),
+        _react2.default.createElement(_reactRouter.Route, { component: _notFound2.default, path: '*' })
+    )
+), document.getElementById('root'));
+
+},{"./admin.jsx":456,"./application.jsx":457,"./notFound.jsx":465,"./playlist.jsx":466,"react":447,"react-dom":269,"react-router":314}],465:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var NotFound = _react2.default.createClass({
+    displayName: 'NotFound',
+    render: function render() {
+        return _react2.default.createElement(
+            'div',
+            null,
+            'Not found'
+        );
+    }
+});
+
+exports.default = NotFound;
+
+},{"react":447}],466:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactBootstrap = require('react-bootstrap');
+
+var _background = require('./background.jsx');
+
+var _background2 = _interopRequireDefault(_background);
+
+var _backgroundsApi = require('./backgroundsApi.jsx');
+
+var _backgroundsApi2 = _interopRequireDefault(_backgroundsApi);
+
+var _carsApi = require('./carsApi.jsx');
+
+var _carsApi2 = _interopRequireDefault(_carsApi);
+
+var _configuration = require('./configuration.jsx');
+
+var _configuration2 = _interopRequireDefault(_configuration);
+
+var _songsApi = require('./songsApi.jsx');
+
+var _songsApi2 = _interopRequireDefault(_songsApi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Playlist = _react2.default.createClass({
+    displayName: 'Playlist',
+    getInitialState: function getInitialState() {
+        return {
+            background: '',
+            backgrounds: [],
+            car: '',
+            cars: [],
+            playlistStyle: {
+                left: '60%',
+                maxHeight: '50%',
+                overflowY: 'scroll',
+                position: 'fixed',
+                top: '30%',
+                width: '25%'
+            },
+            songs: []
+        };
+    },
+    componentWillMount: function componentWillMount() {
+        this.downloadBackgrounds();
+        this.downloadCars();
+        this.downloadSongs();
+    },
+    downloadBackgrounds: function downloadBackgrounds() {
+        var _this = this;
+
+        _backgroundsApi2.default.getAll().then(function (response) {
+            if (!localStorage.getItem('background')) {
+                localStorage.setItem('background', _lodash2.default.first(response));
+            }
+
+            _this.setState({
+                background: localStorage.getItem('background'),
+                backgrounds: response
+            });
+        }).catch(function (error) {
+            alert(error);
+        });
+    },
+    downloadCars: function downloadCars() {
+        var _this2 = this;
+
+        _carsApi2.default.getAll().then(function (response) {
+            if (!localStorage.getItem('car')) {
+                localStorage.setItem('car', _lodash2.default.first(response));
+            }
+
+            _this2.setState({
+                car: localStorage.getItem('car'),
+                cars: response
+            });
+        }).catch(function (error) {
+            alert(error);
+        });
+    },
+    downloadSongs: function downloadSongs() {
+        var _this3 = this;
+
+        _songsApi2.default.getAll().then(function (response) {
+            _this3.setState({
+                songs: response
+            });
+        }).catch(function (error) {
+            alert(error);
+        });
+    },
+    openSongInNewTab: function openSongInNewTab(url) {
+        var tab = window.open(url, '_blank');
+        tab.focus();
+    },
+    handleConfigurationSaving: function handleConfigurationSaving(selectedBackground, selectedCar) {
+        localStorage.setItem('background', selectedBackground);
+        localStorage.setItem('car', selectedCar);
+
+        this.setState({
+            background: selectedBackground,
+            car: selectedCar
+        });
+    },
+    render: function render() {
+        var _this4 = this;
+
+        return _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(_background2.default, {
+                background: this.state.background,
+                car: this.state.car
+            }),
+            _react2.default.createElement(_configuration2.default, {
+                background: this.state.background,
+                backgrounds: this.state.backgrounds,
+                car: this.state.car,
+                cars: this.state.cars,
+                onSave: this.handleConfigurationSaving
+            }),
+            _react2.default.createElement(
+                _reactBootstrap.Panel,
+                {
+                    collapsible: true,
+                    defaultExpanded: true,
+                    header: _react2.default.createElement(
+                        'span',
+                        null,
+                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'music', style: { marginRight: '10px' } }),
+                        _react2.default.createElement(
+                            'strong',
+                            null,
+                            'Playlist'
+                        )
+                    ),
+                    style: this.state.playlistStyle
+                },
+                _react2.default.createElement(
+                    _reactBootstrap.Table,
+                    { fill: true, hover: true, striped: true },
+                    _react2.default.createElement('thead', null),
+                    _react2.default.createElement(
+                        'tbody',
+                        null,
+                        this.state.songs.map(function (song) {
+                            return _react2.default.createElement(
+                                'tr',
+                                { key: song.id },
+                                _react2.default.createElement(
+                                    'td',
+                                    null,
+                                    _react2.default.createElement(
+                                        'span',
+                                        null,
+                                        song.id + '. ' + song.name
+                                    ),
+                                    _react2.default.createElement(
+                                        _reactBootstrap.Button,
+                                        { bsStyle: 'success', onClick: _this4.openSongInNewTab.bind(_this4, song.url), style: { float: 'right' } },
+                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'play' })
+                                    )
+                                )
+                            );
+                        })
+                    )
+                )
+            )
+        );
+    }
+});
+
+exports.default = Playlist;
+
+},{"./background.jsx":458,"./backgroundsApi.jsx":459,"./carsApi.jsx":460,"./configuration.jsx":461,"./songsApi.jsx":467,"lodash":184,"react":447,"react-bootstrap":258}],467:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -53982,694 +54659,4 @@ var SongsApi = {
 
 exports.default = SongsApi;
 
-},{"promise-polyfill":185,"superagent":450}],463:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactBootstrap = require('react-bootstrap');
-
-var _AddSong = require('./AddSong');
-
-var _AddSong2 = _interopRequireDefault(_AddSong);
-
-var _BackgroundsApi = require('./BackgroundsApi');
-
-var _BackgroundsApi2 = _interopRequireDefault(_BackgroundsApi);
-
-var _CarsApi = require('./CarsApi');
-
-var _CarsApi2 = _interopRequireDefault(_CarsApi);
-
-var _ConfirmationModal = require('./ConfirmationModal');
-
-var _ConfirmationModal2 = _interopRequireDefault(_ConfirmationModal);
-
-var _ImageDropzone = require('./ImageDropzone');
-
-var _ImageDropzone2 = _interopRequireDefault(_ImageDropzone);
-
-var _SongsApi = require('./SongsApi');
-
-var _SongsApi2 = _interopRequireDefault(_SongsApi);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Admin = _react2.default.createClass({
-    displayName: 'Admin',
-    getInitialState: function getInitialState() {
-        return {
-            backgrounds: [],
-            cars: [],
-            confirmationModalBody: '',
-            confirmationModalHeader: '',
-            handleModalConfirmation: function handleModalConfirmation() {
-                return 0;
-            },
-            objectToRemove: {},
-            showConfirmationModal: false,
-            songs: []
-        };
-    },
-    componentDidMount: function componentDidMount() {
-        this.downloadBackgrounds();
-        this.downloadCars();
-        this.downloadSongs();
-    },
-    downloadBackgrounds: function downloadBackgrounds() {
-        var _this = this;
-
-        _BackgroundsApi2.default.getAll().then(function (response) {
-            _this.setState({
-                backgrounds: response
-            });
-        }).catch(function (error) {
-            alert(error);
-        });
-    },
-    downloadCars: function downloadCars() {
-        var _this2 = this;
-
-        _CarsApi2.default.getAll().then(function (response) {
-            _this2.setState({
-                cars: response
-            });
-        }).catch(function (error) {
-            alert(error);
-        });
-    },
-    downloadSongs: function downloadSongs() {
-        var _this3 = this;
-
-        _SongsApi2.default.getAll().then(function (response) {
-            _this3.setState({
-                songs: response
-            });
-        }).catch(function (error) {
-            alert(error);
-        });
-    },
-
-    imageContainerStyle: {
-        float: 'left',
-        height: '128px',
-        margin: '1% 1%',
-        width: '48%'
-    },
-
-    imageStyle: {
-        height: '100%',
-        width: '100%'
-    },
-
-    deleteButtonStyle: {
-        bottom: '90%',
-        left: '80%',
-        position: 'relative'
-    },
-
-    showRemoveBackgroundModal: function showRemoveBackgroundModal(name) {
-        this.setState({
-            confirmationModalBody: 'Do you really want to remove ' + name + '?',
-            confirmationModalHeader: 'Remove ' + name,
-            handleModalConfirmation: this.handleBackgroundRemove,
-            objectToRemove: { name: name },
-            showConfirmationModal: true
-        });
-    },
-    handleBackgroundRemove: function handleBackgroundRemove() {
-        var _this4 = this;
-
-        _BackgroundsApi2.default.delete(this.state.objectToRemove.name).then(function (response) {
-            _this4.downloadBackgrounds();
-        }).catch(function (error) {
-            alert(error);
-        });
-
-        this.setState({
-            showConfirmationModal: false
-        });
-    },
-    showRemoveCarModal: function showRemoveCarModal(name) {
-        this.setState({
-            confirmationModalBody: 'Do you really want to remove ' + name + '?',
-            confirmationModalHeader: 'Remove ' + name,
-            handleModalConfirmation: this.handleCarRemove,
-            objectToRemove: { name: name },
-            showConfirmationModal: true
-        });
-    },
-    handleCarRemove: function handleCarRemove() {
-        var _this5 = this;
-
-        _CarsApi2.default.delete(this.state.objectToRemove.name).then(function (response) {
-            _this5.downloadCars();
-        }).catch(function (error) {
-            alert(error);
-        });
-
-        this.setState({
-            showConfirmationModal: false
-        });
-    },
-    showRemoveSongModal: function showRemoveSongModal(id, name) {
-        this.setState({
-            confirmationModalBody: 'Do you really want to remove ' + name + '?',
-            confirmationModalHeader: 'Remove ' + name,
-            handleModalConfirmation: this.handleSongRemove,
-            objectToRemove: { id: id },
-            showConfirmationModal: true
-        });
-    },
-    handleSongRemove: function handleSongRemove() {
-        var _this6 = this;
-
-        _SongsApi2.default.delete(this.state.objectToRemove.id).then(function (response) {
-            _this6.downloadSongs();
-        }).catch(function (error) {
-            alert(error);
-        });
-
-        this.setState({
-            showConfirmationModal: false
-        });
-    },
-    handleModalDismiss: function handleModalDismiss() {
-        this.setState({
-            showConfirmationModal: false
-        });
-    },
-    handleCarDrop: function handleCarDrop(car) {
-        var _this7 = this;
-
-        _CarsApi2.default.create(car).then(function (response) {
-            _this7.downloadCars();
-        }).catch(function (error) {
-            alert(error);
-        });
-    },
-    handleBackgroundDrop: function handleBackgroundDrop(background) {
-        var _this8 = this;
-
-        _BackgroundsApi2.default.create(background).then(function (response) {
-            _this8.downloadBackgrounds();
-        }).catch(function (error) {
-            alert(error);
-        });
-    },
-    handleSongAdding: function handleSongAdding() {
-        this.downloadSongs();
-    },
-    render: function render() {
-        var _this9 = this;
-
-        return _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(
-                _reactBootstrap.Navbar,
-                null,
-                _react2.default.createElement(
-                    _reactBootstrap.Navbar.Header,
-                    null,
-                    _react2.default.createElement(
-                        _reactBootstrap.Navbar.Brand,
-                        null,
-                        _react2.default.createElement(
-                            'a',
-                            { href: '#' },
-                            'Administrator Panel'
-                        )
-                    )
-                ),
-                _react2.default.createElement(
-                    _reactBootstrap.Nav,
-                    null,
-                    _react2.default.createElement(
-                        _reactBootstrap.NavItem,
-                        { eventKey: 1, href: '#' },
-                        'Playlist'
-                    )
-                )
-            ),
-            _react2.default.createElement(
-                _reactBootstrap.Grid,
-                null,
-                _react2.default.createElement(
-                    _reactBootstrap.Row,
-                    null,
-                    _react2.default.createElement(
-                        _reactBootstrap.Col,
-                        { xs: 6 },
-                        _react2.default.createElement(
-                            _reactBootstrap.Panel,
-                            { header: _react2.default.createElement(
-                                    'span',
-                                    null,
-                                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'road' }),
-                                    ' Cars'
-                                ) },
-                            this.state.cars.map(function (car) {
-                                return _react2.default.createElement(
-                                    'div',
-                                    { key: car, style: _this9.imageContainerStyle },
-                                    _react2.default.createElement('img', { src: '../public/cars/' + car, style: _this9.imageStyle }),
-                                    _react2.default.createElement(
-                                        _reactBootstrap.Button,
-                                        {
-                                            bsStyle: 'danger',
-                                            onClick: _this9.showRemoveCarModal.bind(_this9, car),
-                                            style: _this9.deleteButtonStyle
-                                        },
-                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' })
-                                    )
-                                );
-                            }),
-                            _react2.default.createElement(_ImageDropzone2.default, { onDrop: this.handleCarDrop })
-                        )
-                    ),
-                    _react2.default.createElement(
-                        _reactBootstrap.Col,
-                        { xs: 6 },
-                        _react2.default.createElement(
-                            _reactBootstrap.Panel,
-                            { header: _react2.default.createElement(
-                                    'span',
-                                    null,
-                                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'picture' }),
-                                    ' Backgrounds'
-                                ) },
-                            this.state.backgrounds.map(function (background) {
-                                return _react2.default.createElement(
-                                    'div',
-                                    { key: background, style: _this9.imageContainerStyle },
-                                    _react2.default.createElement('img', { src: '../public/backgrounds/' + background, style: _this9.imageStyle }),
-                                    _react2.default.createElement(
-                                        _reactBootstrap.Button,
-                                        {
-                                            bsStyle: 'danger',
-                                            onClick: _this9.showRemoveBackgroundModal.bind(_this9, background),
-                                            style: _this9.deleteButtonStyle
-                                        },
-                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' })
-                                    )
-                                );
-                            }),
-                            _react2.default.createElement(_ImageDropzone2.default, { onDrop: this.handleBackgroundDrop })
-                        )
-                    )
-                ),
-                _react2.default.createElement(
-                    _reactBootstrap.Row,
-                    null,
-                    _react2.default.createElement(
-                        _reactBootstrap.Col,
-                        { xs: 12 },
-                        _react2.default.createElement(
-                            _reactBootstrap.Panel,
-                            { header: _react2.default.createElement(
-                                    'span',
-                                    null,
-                                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'music' }),
-                                    ' Playlist'
-                                ) },
-                            _react2.default.createElement(
-                                _reactBootstrap.Table,
-                                { hover: true, striped: true },
-                                _react2.default.createElement(
-                                    'thead',
-                                    null,
-                                    _react2.default.createElement(
-                                        'tr',
-                                        null,
-                                        _react2.default.createElement(
-                                            'td',
-                                            null,
-                                            'Id'
-                                        ),
-                                        _react2.default.createElement(
-                                            'td',
-                                            null,
-                                            'Name'
-                                        ),
-                                        _react2.default.createElement(
-                                            'td',
-                                            null,
-                                            'URL'
-                                        ),
-                                        _react2.default.createElement('td', null)
-                                    )
-                                ),
-                                _react2.default.createElement(
-                                    'tbody',
-                                    null,
-                                    this.state.songs.map(function (song) {
-                                        return _react2.default.createElement(
-                                            'tr',
-                                            { key: song.id },
-                                            _react2.default.createElement(
-                                                'td',
-                                                null,
-                                                song.id
-                                            ),
-                                            _react2.default.createElement(
-                                                'td',
-                                                null,
-                                                song.name
-                                            ),
-                                            _react2.default.createElement(
-                                                'td',
-                                                null,
-                                                song.url
-                                            ),
-                                            _react2.default.createElement(
-                                                'td',
-                                                null,
-                                                _react2.default.createElement(
-                                                    'div',
-                                                    { className: 'pull-right' },
-                                                    _react2.default.createElement(
-                                                        _reactBootstrap.Button,
-                                                        { bsStyle: 'danger', onClick: _this9.showRemoveSongModal.bind(_this9, song.id, song.name) },
-                                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' })
-                                                    )
-                                                )
-                                            )
-                                        );
-                                    })
-                                )
-                            ),
-                            _react2.default.createElement(_AddSong2.default, { onSuccess: this.handleSongAdding })
-                        )
-                    )
-                )
-            ),
-            _react2.default.createElement(_ConfirmationModal2.default, {
-                body: this.state.confirmationModalBody,
-                header: this.state.confirmationModalHeader,
-                onConfirmation: this.state.handleModalConfirmation,
-                onDismiss: this.handleModalDismiss,
-                show: this.state.showConfirmationModal
-            })
-        );
-    }
-});
-
-exports.default = Admin;
-
-},{"./AddSong":455,"./BackgroundsApi":457,"./CarsApi":458,"./ConfirmationModal":460,"./ImageDropzone":461,"./SongsApi":462,"react":447,"react-bootstrap":258}],464:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var App = _react2.default.createClass({
-    displayName: 'App',
-
-    propTypes: {
-        children: _react2.default.PropTypes.node
-    },
-
-    render: function render() {
-        return _react2.default.createElement(
-            'div',
-            null,
-            this.props.children
-        );
-    }
-});
-
-exports.default = App;
-
-},{"react":447}],465:[function(require,module,exports){
-'use strict';
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _reactRouter = require('react-router');
-
-var _admin = require('./admin');
-
-var _admin2 = _interopRequireDefault(_admin);
-
-var _app = require('./app');
-
-var _app2 = _interopRequireDefault(_app);
-
-var _notFound = require('./notFound');
-
-var _notFound2 = _interopRequireDefault(_notFound);
-
-var _playlist = require('./playlist');
-
-var _playlist2 = _interopRequireDefault(_playlist);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_reactDom2.default.render(_react2.default.createElement(
-  _reactRouter.Router,
-  null,
-  _react2.default.createElement(
-    _reactRouter.Route,
-    { component: _app2.default, path: '/' },
-    _react2.default.createElement(_reactRouter.IndexRoute, { component: _playlist2.default }),
-    _react2.default.createElement(_reactRouter.Route, { component: _admin2.default, path: 'admin' }),
-    _react2.default.createElement(_reactRouter.Route, { component: _notFound2.default, path: '*' })
-  )
-), document.getElementById('root'));
-
-},{"./admin":463,"./app":464,"./notFound":466,"./playlist":467,"react":447,"react-dom":269,"react-router":314}],466:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var NotFound = _react2.default.createClass({
-    displayName: 'NotFound',
-    render: function render() {
-        return _react2.default.createElement(
-            'div',
-            null,
-            'Not found'
-        );
-    }
-});
-
-exports.default = NotFound;
-
-},{"react":447}],467:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactBootstrap = require('react-bootstrap');
-
-var _Background = require('./Background');
-
-var _Background2 = _interopRequireDefault(_Background);
-
-var _Configuration = require('./Configuration');
-
-var _Configuration2 = _interopRequireDefault(_Configuration);
-
-var _BackgroundsApi = require('./BackgroundsApi');
-
-var _BackgroundsApi2 = _interopRequireDefault(_BackgroundsApi);
-
-var _CarsApi = require('./CarsApi');
-
-var _CarsApi2 = _interopRequireDefault(_CarsApi);
-
-var _SongsApi = require('./SongsApi');
-
-var _SongsApi2 = _interopRequireDefault(_SongsApi);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Playlist = _react2.default.createClass({
-    displayName: 'Playlist',
-    getInitialState: function getInitialState() {
-        return {
-            background: '',
-            backgrounds: [],
-            car: '',
-            cars: [],
-            playlistStyle: {
-                left: '60%',
-                maxHeight: '50%',
-                overflowY: 'scroll',
-                position: 'fixed',
-                top: '30%',
-                width: '25%'
-            },
-            songs: []
-        };
-    },
-    componentWillMount: function componentWillMount() {
-        this.downloadBackgrounds();
-        this.downloadCars();
-        this.downloadSongs();
-    },
-    downloadBackgrounds: function downloadBackgrounds() {
-        var _this = this;
-
-        _BackgroundsApi2.default.getAll().then(function (response) {
-            if (!localStorage.getItem('background')) {
-                localStorage.setItem('background', _lodash2.default.first(response));
-            }
-
-            _this.setState({
-                background: localStorage.getItem('background'),
-                backgrounds: response
-            });
-        }).catch(function (error) {
-            alert(error);
-        });
-    },
-    downloadCars: function downloadCars() {
-        var _this2 = this;
-
-        _CarsApi2.default.getAll().then(function (response) {
-            if (!localStorage.getItem('car')) {
-                localStorage.setItem('car', _lodash2.default.first(response));
-            }
-
-            _this2.setState({
-                car: localStorage.getItem('car'),
-                cars: response
-            });
-        }).catch(function (error) {
-            alert(error);
-        });
-    },
-    downloadSongs: function downloadSongs() {
-        var _this3 = this;
-
-        _SongsApi2.default.getAll().then(function (response) {
-            _this3.setState({
-                songs: response
-            });
-        }).catch(function (error) {
-            alert(error);
-        });
-    },
-    openSongInNewTab: function openSongInNewTab(url) {
-        var tab = window.open(url, '_blank');
-        tab.focus();
-    },
-    handleConfigurationSaving: function handleConfigurationSaving(selectedBackground, selectedCar) {
-        localStorage.setItem('background', selectedBackground);
-        localStorage.setItem('car', selectedCar);
-
-        this.setState({
-            background: selectedBackground,
-            car: selectedCar
-        });
-    },
-    render: function render() {
-        var _this4 = this;
-
-        return _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(_Background2.default, {
-                background: this.state.background,
-                car: this.state.car
-            }),
-            _react2.default.createElement(_Configuration2.default, {
-                background: this.state.background,
-                backgrounds: this.state.backgrounds,
-                car: this.state.car,
-                cars: this.state.cars,
-                onSave: this.handleConfigurationSaving
-            }),
-            _react2.default.createElement(
-                _reactBootstrap.Panel,
-                {
-                    collapsible: true,
-                    defaultExpanded: true,
-                    header: _react2.default.createElement(
-                        'span',
-                        null,
-                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'music', style: { marginRight: '10px' } }),
-                        _react2.default.createElement(
-                            'strong',
-                            null,
-                            'Playlist'
-                        )
-                    ),
-                    style: this.state.playlistStyle
-                },
-                _react2.default.createElement(
-                    _reactBootstrap.Table,
-                    { fill: true, hover: true, striped: true },
-                    _react2.default.createElement('thead', null),
-                    _react2.default.createElement(
-                        'tbody',
-                        null,
-                        this.state.songs.map(function (song) {
-                            return _react2.default.createElement(
-                                'tr',
-                                { key: song.id },
-                                _react2.default.createElement(
-                                    'td',
-                                    null,
-                                    _react2.default.createElement(
-                                        'span',
-                                        null,
-                                        song.id + '. ' + song.name
-                                    ),
-                                    _react2.default.createElement(
-                                        _reactBootstrap.Button,
-                                        { bsStyle: 'success', onClick: _this4.openSongInNewTab.bind(_this4, song.url), style: { float: 'right' } },
-                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'play' })
-                                    )
-                                )
-                            );
-                        })
-                    )
-                )
-            )
-        );
-    }
-});
-
-exports.default = Playlist;
-
-},{"./Background":456,"./BackgroundsApi":457,"./CarsApi":458,"./Configuration":459,"./SongsApi":462,"lodash":184,"react":447,"react-bootstrap":258}]},{},[465]);
+},{"promise-polyfill":185,"superagent":450}]},{},[464]);

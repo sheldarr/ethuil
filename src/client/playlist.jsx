@@ -2,11 +2,11 @@ import _ from 'lodash';
 import React from 'react';
 import { Button, Glyphicon, Panel, Table } from 'react-bootstrap';
 
-import Background from './Background';
-import Configuration from './Configuration';
-import BackgroundsApi from './BackgroundsApi';
-import CarsApi from './CarsApi';
-import SongsApi from './SongsApi';
+import Background from './background.jsx';
+import BackgroundsApi from './backgroundsApi.jsx';
+import CarsApi from './carsApi.jsx';
+import Configuration from './configuration.jsx';
+import SongsApi from './songsApi.jsx';
 
 const Playlist = React.createClass({
     getInitialState () {
