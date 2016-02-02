@@ -14,11 +14,12 @@ const Playlist = React.createClass({
             car: '',
             cars: [],
             playlistStyle: {
+                bottom: '5%',
                 left: '60%',
                 maxHeight: '50%',
+                opacity: '0.5',
                 overflowY: 'scroll',
                 position: 'fixed',
-                top: '30%',
                 width: '25%'
             },
             songs: []
@@ -84,6 +85,22 @@ const Playlist = React.createClass({
         });
     },
 
+    previousBackground () {
+
+    },
+
+    nextBackground () {
+
+    },
+
+    previousCar () {
+
+    },
+
+    nextCar () {
+
+    },
+
     render () {
         return (
             <div>
@@ -91,10 +108,29 @@ const Playlist = React.createClass({
                     background={this.state.background}
                     car={this.state.car}
                 />
+                <div style={{position: 'fixed', left: '3%', top: '5%', opacity: '0.5'}}>
+                    <Button bsStyle="default" onClick={this.previousBackground}>
+                        <Glyphicon glyph="triangle-left"/>
+                    </Button>
+                </div>
+                <div style={{position: 'fixed', right: '3%', top: '5%', opacity: '0.5'}}>
+                    <Button bsStyle="default" onClick={this.nextBackground}>
+                        <Glyphicon glyph="triangle-right"/>
+                    </Button>
+                </div>
+                <div style={{position: 'fixed', left: '3%', bottom: '5%', opacity: '0.5'}}>
+                    <Button bsStyle="default" onClick={this.previousCar}>
+                        <Glyphicon glyph="triangle-left"/>
+                    </Button>
+                </div>
+                <div style={{position: 'fixed', right: '3%', bottom: '5%', opacity: '0.5'}}>
+                    <Button bsStyle="default" onClick={this.nextCar}>
+                        <Glyphicon glyph="triangle-right"/>
+                    </Button>
+                </div>
                 <Panel
                     collapsible
                     defaultExpanded
-                    header={<span><Glyphicon glyph="music" style={{marginRight: '10px'}}/><strong>{'Playlist'}</strong></span>}
                     style={this.state.playlistStyle}
                 >
                     <Table fill hover striped>

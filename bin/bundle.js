@@ -56260,11 +56260,12 @@
 	            car: '',
 	            cars: [],
 	            playlistStyle: {
+	                bottom: '5%',
 	                left: '60%',
 	                maxHeight: '50%',
+	                opacity: '0.5',
 	                overflowY: 'scroll',
 	                position: 'fixed',
-	                top: '30%',
 	                width: '25%'
 	            },
 	            songs: []
@@ -56323,6 +56324,10 @@
 	            car: selectedCar
 	        });
 	    },
+	    previousBackground: function previousBackground() {},
+	    nextBackground: function nextBackground() {},
+	    previousCar: function previousCar() {},
+	    nextCar: function nextCar() {},
 	    render: function render() {
 	        var _this4 = this;
 
@@ -56334,20 +56339,46 @@
 	                car: this.state.car
 	            }),
 	            _react2.default.createElement(
+	                'div',
+	                { style: { position: 'fixed', left: '3%', top: '5%', opacity: '0.5' } },
+	                _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsStyle: 'default', onClick: this.previousBackground },
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'triangle-left' })
+	                )
+	            ),
+	            _react2.default.createElement(
+	                'div',
+	                { style: { position: 'fixed', right: '3%', top: '5%', opacity: '0.5' } },
+	                _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsStyle: 'default', onClick: this.nextBackground },
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'triangle-right' })
+	                )
+	            ),
+	            _react2.default.createElement(
+	                'div',
+	                { style: { position: 'fixed', left: '3%', bottom: '5%', opacity: '0.5' } },
+	                _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsStyle: 'default', onClick: this.previousCar },
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'triangle-left' })
+	                )
+	            ),
+	            _react2.default.createElement(
+	                'div',
+	                { style: { position: 'fixed', right: '3%', bottom: '5%', opacity: '0.5' } },
+	                _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsStyle: 'default', onClick: this.nextCar },
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'triangle-right' })
+	                )
+	            ),
+	            _react2.default.createElement(
 	                _reactBootstrap.Panel,
 	                {
 	                    collapsible: true,
 	                    defaultExpanded: true,
-	                    header: _react2.default.createElement(
-	                        'span',
-	                        null,
-	                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'music', style: { marginRight: '10px' } }),
-	                        _react2.default.createElement(
-	                            'strong',
-	                            null,
-	                            'Playlist'
-	                        )
-	                    ),
 	                    style: this.state.playlistStyle
 	                },
 	                _react2.default.createElement(
