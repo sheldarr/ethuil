@@ -101,13 +101,6 @@ const Playlist = React.createClass({
                     background={this.state.background}
                     car={this.state.car}
                 />
-                <Configuration
-                    background={this.state.background}
-                    backgrounds={this.state.backgrounds}
-                    car={this.state.car}
-                    cars={this.state.cars}
-                    onSave={this.handleConfigurationSaving}
-                />
                 <Panel
                     collapsible
                     defaultExpanded

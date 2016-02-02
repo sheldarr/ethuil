@@ -56349,13 +56349,6 @@
 	                background: this.state.background,
 	                car: this.state.car
 	            }),
-	            _react2.default.createElement(_configuration2.default, {
-	                background: this.state.background,
-	                backgrounds: this.state.backgrounds,
-	                car: this.state.car,
-	                cars: this.state.cars,
-	                onSave: this.handleConfigurationSaving
-	            }),
 	            _react2.default.createElement(
 	                _reactBootstrap.Panel,
 	                {
