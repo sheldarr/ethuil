@@ -1,11 +1,13 @@
 import Promise from 'promise-polyfill';
 import Request from 'superagent';
 
+import configuration from '../var/configuration';
+
 const BackgroundsApi = {
     getAll () {
         return new Promise((resolve, reject) => {
             Request
-               .get('http://178.62.6.112:3033/background')
+               .get(`${configuration.apiAddress}/background`)
                .end((err, res) => {
                    if (err) {
                        console.log(err);
@@ -23,7 +25,7 @@ const BackgroundsApi = {
     create (background) {
         return new Promise((resolve, reject) => {
             Request
-                .post('http://178.62.6.112:3033/background')
+                .post(`${configuration.apiAddress}/background`)
                 .attach(background.name, background)
                 .end((err, res) => {
                     if (err) {
@@ -42,7 +44,7 @@ const BackgroundsApi = {
     delete (name) {
         return new Promise((resolve, reject) => {
             Request
-                .del(`http://178.62.6.112:3033/background`)
+                .del(`${configuration.apiAddress}/background`)
                 .send({name: name})
                 .end((err, res) => {
                     if (err) {

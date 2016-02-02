@@ -1,3 +1,4 @@
+import Configuration from '../var/configuration';
 import Promise from 'promise-polyfill';
 import Request from 'superagent';
 
@@ -5,7 +6,7 @@ const CarsApi = {
     getAll () {
         return new Promise((resolve, reject) => {
             Request
-               .get('http://178.62.6.112:3033/car')
+               .get(`${Configuration.apiAddress}/car`)
                .end((err, res) => {
                    if (err) {
                        console.log(err);
@@ -23,7 +24,7 @@ const CarsApi = {
     create (car) {
         return new Promise((resolve, reject) => {
             Request
-                .post('http://178.62.6.112:3033/car')
+                .post(`${Configuration.apiAddress}/car`)
                 .attach(car.name, car)
                 .end((err, res) => {
                     if (err) {
@@ -42,7 +43,7 @@ const CarsApi = {
     delete (name) {
         return new Promise((resolve, reject) => {
             Request
-                .del(`http://178.62.6.112:3033/car`)
+                .del(`${Configuration.apiAddress}/car`)
                 .send({name: name})
                 .end((err, res) => {
                     if (err) {
