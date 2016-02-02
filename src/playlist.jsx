@@ -86,19 +86,75 @@ const Playlist = React.createClass({
     },
 
     previousBackground () {
+        if (this.state.backgrounds.length === 1) {
+            return;
+        }
 
+        if (this.state.backgrounds.indexOf(this.state.background) === 0) {
+            this.setState({
+                background: this.state.backgrounds[this.state.backgrounds.length - 1]
+            });
+
+            return;
+        }
+
+        this.setState({
+            background: this.state.backgrounds[this.state.backgrounds.indexOf(this.state.background) - 1]
+        });
     },
 
     nextBackground () {
+        if (this.state.backgrounds.length === 1) {
+            return;
+        }
 
+        if (this.state.backgrounds.indexOf(this.state.background) === this.state.backgrounds.length - 1) {
+            this.setState({
+                background: this.state.backgrounds[0]
+            });
+
+            return;
+        }
+
+        this.setState({
+            background: this.state.backgrounds[this.state.backgrounds.indexOf(this.state.background) + 1]
+        });
     },
 
     previousCar () {
+        if (this.state.cars.length === 1) {
+            return;
+        }
 
+        if (this.state.cars.indexOf(this.state.car) === 0) {
+            this.setState({
+                car: this.state.cars[this.state.cars.length - 1]
+            });
+
+            return;
+        }
+
+        this.setState({
+            car: this.state.cars[this.state.cars.indexOf(this.state.car) - 1]
+        });
     },
 
     nextCar () {
+        if (this.state.cars.length === 1) {
+            return;
+        }
 
+        if (this.state.cars.indexOf(this.state.car) === this.state.cars.length - 1) {
+            this.setState({
+                car: this.state.cars[0]
+            });
+
+            return;
+        }
+
+        this.setState({
+            car: this.state.cars[this.state.cars.indexOf(this.state.car) + 1]
+        });
     },
 
     render () {
