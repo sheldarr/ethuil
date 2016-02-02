@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Glyphicon, Panel, Table } from 'react-bootstrap';
+import { Button, Glyphicon, Image, Panel, Table } from 'react-bootstrap';
 
 import Background from './background.jsx';
 import BackgroundsApi from './backgroundsApi.jsx';
@@ -198,14 +198,40 @@ const Playlist = React.createClass({
                                     <td>
                                         <span>{`${song.id}. ${song.name}`}</span>
                                         <Button bsStyle="success" onClick={this.openSongInNewTab.bind(this, song.url)} style={{float: 'right'}}>
-                                            <Glyphicon glyph="play" />
+                                            <Glyphicon glyph="play"/>
                                         </Button>
                                     </td>
                                 </tr>
                             )}
                         </tbody>
                     </Table>
-                 </Panel>
+                </Panel>
+                <div
+                    style={{
+                        bottom: '2%',
+                        left: '60%',
+                        position: 'fixed',
+                        width: '25%'
+                    }}
+                >
+                    <a href="http://www.facebook.com">
+                        <Image rounded src="/public/fb.png"
+                            style={{
+                                height: '30px',
+                                width: '30px'
+                            }}
+                        />
+                    </a>
+                    <span
+                        style={{
+                            color: 'white',
+                            float: 'right',
+                            fontSize: '20px'
+                        }}
+                    >
+                        {'Logo Space'}
+                    </span>
+                </div>
             </div>
         );
     }

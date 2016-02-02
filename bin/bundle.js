@@ -56474,6 +56474,38 @@
 	                        })
 	                    )
 	                )
+	            ),
+	            _react2.default.createElement(
+	                'div',
+	                {
+	                    style: {
+	                        bottom: '2%',
+	                        left: '60%',
+	                        position: 'fixed',
+	                        width: '25%'
+	                    }
+	                },
+	                _react2.default.createElement(
+	                    'a',
+	                    { href: 'http://www.facebook.com' },
+	                    _react2.default.createElement(_reactBootstrap.Image, { rounded: true, src: '/public/fb.png',
+	                        style: {
+	                            height: '30px',
+	                            width: '30px'
+	                        }
+	                    })
+	                ),
+	                _react2.default.createElement(
+	                    'span',
+	                    {
+	                        style: {
+	                            color: 'white',
+	                            float: 'right',
+	                            fontSize: '20px'
+	                        }
+	                    },
+	                    'Logo Space'
+	                )
 	            )
 	        );
 	    }
