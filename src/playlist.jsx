@@ -5,6 +5,7 @@ import Background from './background.jsx';
 import BackgroundsApi from './backgroundsApi.jsx';
 import CarsApi from './carsApi.jsx';
 import SongsApi from './songsApi.jsx';
+import YouTube from 'react-youtube';
 
 const Playlist = React.createClass({
     getInitialState () {
@@ -13,6 +14,7 @@ const Playlist = React.createClass({
             backgrounds: [],
             car: '',
             cars: [],
+            currentSong: '',
             playlistStyle: {
                 bottom: '5%',
                 left: '60%',
@@ -22,6 +24,7 @@ const Playlist = React.createClass({
                 position: 'fixed',
                 width: '25%'
             },
+            songPaused: false,
             songs: []
         };
     },
@@ -68,11 +71,6 @@ const Playlist = React.createClass({
             .catch(error => {
                 alert(error);
             });
-    },
-
-    openSongInNewTab (url) {
-        let tab = window.open(url, '_blank');
-        tab.focus();
     },
 
     handleConfigurationSaving (selectedBackground, selectedCar) {
@@ -157,9 +155,38 @@ const Playlist = React.createClass({
         });
     },
 
+    onReady (event) {
+        event.target.setVolume(100);
+    },
+
+    playSong (url) {
+        var videoId = url.match(/\?v=(.*)/)[1];
+
+        this.setState({
+            currentSong: url,
+            songPaused: false
+        });
+
+        this.refs.youtube._internalPlayer.loadVideoById(videoId);
+        this.refs.youtube._internalPlayer.playVideo();
+    },
+
+    pauseSong () {
+        this.refs.youtube._internalPlayer.pauseVideo();
+
+        this.setState({
+            songPaused: true
+        });
+    },
+
     render () {
         return (
             <div>
+                <YouTube
+                    className="hidden"
+                    onReady={this.onReady}
+                    ref="youtube"
+                />
                 <Background
                     background={this.state.background}
                     car={this.state.car}
@@ -197,9 +224,17 @@ const Playlist = React.createClass({
                                 <tr key={song.id}>
                                     <td>
                                         <span>{`${song.id}. ${song.name}`}</span>
-                                        <Button bsStyle="success" onClick={this.openSongInNewTab.bind(this, song.url)} style={{float: 'right'}}>
-                                            <Glyphicon glyph="play"/>
-                                        </Button>
+                                        {this.state.currentSong === song.url && !this.state.songPaused
+                                            ? <Button bsStyle="danger" onClick={this.pauseSong.bind(this)} style={{float: 'right'}}>
+                                                <Glyphicon glyph="pause"/>
+                                            </Button>
+                                            : null}
+                                        {this.state.currentSong !== song.url || this.state.songPaused
+                                            ? <Button bsStyle="success" onClick={this.playSong.bind(this, song.url)} style={{float: 'right'}}>
+                                                <Glyphicon glyph="play"/>
+                                            </Button>
+                                            : null
+                                        }
                                     </td>
                                 </tr>
                             )}
