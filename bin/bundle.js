@@ -56227,10 +56227,6 @@
 	    value: true
 	});
 
-	var _lodash = __webpack_require__(461);
-
-	var _lodash2 = _interopRequireDefault(_lodash);
-
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -56248,10 +56244,6 @@
 	var _carsApi = __webpack_require__(458);
 
 	var _carsApi2 = _interopRequireDefault(_carsApi);
-
-	var _configuration = __webpack_require__(469);
-
-	var _configuration2 = _interopRequireDefault(_configuration);
 
 	var _songsApi = __webpack_require__(450);
 
@@ -56287,12 +56279,8 @@
 	        var _this = this;
 
 	        _backgroundsApi2.default.getAll().then(function (response) {
-	            if (!localStorage.getItem('background')) {
-	                localStorage.setItem('background', _lodash2.default.first(response));
-	            }
-
 	            _this.setState({
-	                background: localStorage.getItem('background'),
+	                background: response[Math.floor(Math.random() * response.length)],
 	                backgrounds: response
 	            });
 	        }).catch(function (error) {
@@ -56303,12 +56291,8 @@
 	        var _this2 = this;
 
 	        _carsApi2.default.getAll().then(function (response) {
-	            if (!localStorage.getItem('car')) {
-	                localStorage.setItem('car', _lodash2.default.first(response));
-	            }
-
 	            _this2.setState({
-	                car: localStorage.getItem('car'),
+	                car: response[Math.floor(Math.random() * response.length)],
 	                cars: response
 	            });
 	        }).catch(function (error) {
@@ -56445,215 +56429,6 @@
 	});
 
 	exports.default = Background;
-
-/***/ },
-/* 469 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactBootstrap = __webpack_require__(207);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var Configuration = _react2.default.createClass({
-	    displayName: 'Configuration',
-
-	    propTypes: {
-	        background: _react2.default.PropTypes.string.isRequired,
-	        backgrounds: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.string).isRequired,
-	        car: _react2.default.PropTypes.string.isRequired,
-	        cars: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.string).isRequired,
-	        onSave: _react2.default.PropTypes.func.isRequired
-	    },
-
-	    getInitialState: function getInitialState() {
-	        return {
-	            selectedBackground: this.props.background,
-	            selectedCar: this.props.car,
-	            showConfigurationModal: false
-	        };
-	    },
-
-	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	        this.setState({
-	            selectedBackground: nextProps.background,
-	            selectedCar: nextProps.car
-	        });
-	    },
-
-	    handleConfigurationShowing: function handleConfigurationShowing() {
-	        this.setState({
-	            selectedBackground: this.props.background,
-	            selectedCar: this.props.car,
-	            showConfigurationModal: true
-	        });
-	    },
-	    handleDismiss: function handleDismiss() {
-	        this.setState({
-	            showConfigurationModal: false
-	        });
-	    },
-	    handleConfigurationSaving: function handleConfigurationSaving() {
-	        this.props.onSave(this.state.selectedBackground, this.state.selectedCar);
-
-	        this.setState({
-	            showConfigurationModal: false
-	        });
-	    },
-
-	    imageContainerStyle: {
-	        height: '128px',
-	        margin: '1% 1%'
-	    },
-
-	    imageStyle: {
-	        height: '100%',
-	        width: '100%'
-	    },
-
-	    selectButtonStyle: {
-	        bottom: '90%',
-	        left: '80%',
-	        position: 'relative'
-	    },
-
-	    selectBackground: function selectBackground(background) {
-	        this.setState({
-	            selectedBackground: background
-	        });
-	    },
-	    selectCar: function selectCar(car) {
-	        this.setState({
-	            selectedCar: car
-	        });
-	    },
-	    render: function render() {
-	        var _this = this;
-
-	        return _react2.default.createElement(
-	            'div',
-	            { style: { position: 'fixed', right: '3%', top: '5%' } },
-	            _react2.default.createElement(
-	                _reactBootstrap.Button,
-	                { bsStyle: 'success', onClick: this.handleConfigurationShowing },
-	                _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'cog' })
-	            ),
-	            _react2.default.createElement(
-	                _reactBootstrap.Modal,
-	                { onHide: this.handleDismiss, show: this.state.showConfigurationModal },
-	                _react2.default.createElement(
-	                    _reactBootstrap.Modal.Header,
-	                    { closeButton: true },
-	                    _react2.default.createElement(
-	                        _reactBootstrap.Modal.Title,
-	                        null,
-	                        _react2.default.createElement(
-	                            'span',
-	                            null,
-	                            _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'cog' }),
-	                            ' Configuration'
-	                        )
-	                    )
-	                ),
-	                _react2.default.createElement(
-	                    _reactBootstrap.Modal.Body,
-	                    null,
-	                    _react2.default.createElement(
-	                        _reactBootstrap.Row,
-	                        null,
-	                        _react2.default.createElement(
-	                            _reactBootstrap.Col,
-	                            { xs: 6 },
-	                            _react2.default.createElement(
-	                                _reactBootstrap.Panel,
-	                                { header: _react2.default.createElement(
-	                                        'span',
-	                                        null,
-	                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'road' }),
-	                                        ' Cars'
-	                                    ) },
-	                                this.props.cars.map(function (car) {
-	                                    return _react2.default.createElement(
-	                                        'div',
-	                                        { key: car, style: _this.imageContainerStyle },
-	                                        _react2.default.createElement('img', { src: '../public/cars/' + car, style: _this.imageStyle }),
-	                                        _react2.default.createElement(
-	                                            _reactBootstrap.Button,
-	                                            {
-	                                                bsStyle: 'primary',
-	                                                onClick: _this.selectCar.bind(_this, car),
-	                                                style: _this.selectButtonStyle
-	                                            },
-	                                            _this.state.selectedCar === car ? _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'ok' }) : _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'minus' })
-	                                        )
-	                                    );
-	                                })
-	                            )
-	                        ),
-	                        _react2.default.createElement(
-	                            _reactBootstrap.Col,
-	                            { xs: 6 },
-	                            _react2.default.createElement(
-	                                _reactBootstrap.Panel,
-	                                { header: _react2.default.createElement(
-	                                        'span',
-	                                        null,
-	                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'picture' }),
-	                                        ' Backgrounds'
-	                                    ) },
-	                                this.props.backgrounds.map(function (background) {
-	                                    return _react2.default.createElement(
-	                                        'div',
-	                                        { key: background, style: _this.imageContainerStyle },
-	                                        _react2.default.createElement('img', { src: '../public/backgrounds/' + background, style: _this.imageStyle }),
-	                                        _react2.default.createElement(
-	                                            _reactBootstrap.Button,
-	                                            {
-	                                                bsStyle: 'primary',
-	                                                onClick: _this.selectBackground.bind(_this, background),
-	                                                style: _this.selectButtonStyle
-	                                            },
-	                                            _this.state.selectedBackground === background ? _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'ok' }) : _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'minus' })
-	                                        )
-	                                    );
-	                                })
-	                            )
-	                        )
-	                    )
-	                ),
-	                _react2.default.createElement(
-	                    _reactBootstrap.Modal.Footer,
-	                    null,
-	                    _react2.default.createElement(
-	                        _reactBootstrap.Button,
-	                        { bsStyle: 'success', onClick: this.handleConfigurationSaving },
-	                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'ok' }),
-	                        ' ',
-	                        'Confirm'
-	                    ),
-	                    _react2.default.createElement(
-	                        _reactBootstrap.Button,
-	                        { bsStyle: 'danger', onClick: this.handleDismiss },
-	                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' }),
-	                        ' ',
-	                        'Cancel'
-	                    )
-	                )
-	            )
-	        );
-	    }
-	});
-
-	exports.default = Configuration;
 
 /***/ }
 /******/ ]);

@@ -1,11 +1,9 @@
-import _ from 'lodash';
 import React from 'react';
 import { Button, Glyphicon, Panel, Table } from 'react-bootstrap';
 
 import Background from './background.jsx';
 import BackgroundsApi from './backgroundsApi.jsx';
 import CarsApi from './carsApi.jsx';
-import Configuration from './configuration.jsx';
 import SongsApi from './songsApi.jsx';
 
 const Playlist = React.createClass({
@@ -36,12 +34,8 @@ const Playlist = React.createClass({
     downloadBackgrounds () {
         BackgroundsApi.getAll()
             .then(response => {
-                if (!localStorage.getItem('background')) {
-                    localStorage.setItem('background', _.first(response));
-                }
-
                 this.setState({
-                    background: localStorage.getItem('background'),
+                    background: response[Math.floor(Math.random() * response.length)],
                     backgrounds: response
                 });
             })
@@ -53,12 +47,8 @@ const Playlist = React.createClass({
     downloadCars () {
         CarsApi.getAll()
             .then(response => {
-                if (!localStorage.getItem('car')) {
-                    localStorage.setItem('car', _.first(response));
-                }
-
                 this.setState({
-                    car: localStorage.getItem('car'),
+                    car: response[Math.floor(Math.random() * response.length)],
                     cars: response
                 });
             })
