@@ -1,11 +1,13 @@
 import _ from 'lodash';
 import Dropzone from 'react-dropzone';
 import React from 'react';
+var Spinner = require('react-spinkit');
 import { Glyphicon } from 'react-bootstrap';
 
 const ImageDropzone = React.createClass({
     propTypes: {
-        onDrop: React.PropTypes.func.isRequired
+        onDrop: React.PropTypes.func.isRequired,
+        uploading: React.PropTypes.bool.isRequired
     },
 
     handleDrop (images) {
@@ -35,7 +37,10 @@ const ImageDropzone = React.createClass({
         return (
             <Dropzone multiple={false} onDrop={this.handleDrop} style={this.dropzoneStyle}>
                 <div style={this.uploadGlyphiconStyle}>
-                    <Glyphicon glyph="upload" />
+                    {this.props.uploading
+                        ? <Spinner spinnerName="three-bounce"/>
+                        : <Glyphicon glyph="upload" />
+                    }
                 </div>
             </Dropzone>
         );

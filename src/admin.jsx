@@ -19,7 +19,9 @@ const Admin = React.createClass({
             handleModalConfirmation: () => 0,
             objectToRemove: {},
             showConfirmationModal: false,
-            songs: []
+            songs: [],
+            uploadingBackground: false,
+            uploadingCar: false
         };
     },
 
@@ -30,25 +32,42 @@ const Admin = React.createClass({
     },
 
     downloadBackgrounds () {
+        this.setState({
+            uploadingBackground: true
+        });
+
         BackgroundsApi.getAll()
             .then(response => {
                 this.setState({
-                    backgrounds: response
+                    backgrounds: response,
+                    uploadingBackground: false
                 });
             })
             .catch(error => {
+                this.setState({
+                    uploadingBackground: false
+                });
+
                 alert(error);
             });
     },
 
     downloadCars () {
+        this.setState({
+            uploadingCar: true
+        });
+
         CarsApi.getAll()
             .then(response => {
                 this.setState({
-                    cars: response
+                    cars: response,
+                    uploadingCar: false
                 });
             })
             .catch(error => {
+                this.setState({
+                    uploadingCar: false
+                });
                 alert(error);
             });
     },
@@ -214,7 +233,10 @@ const Admin = React.createClass({
                                         </Button>
                                     </div>
                                 ))}
-                                <ImageDropzone onDrop={this.handleCarDrop}/>
+                                <ImageDropzone
+                                    onDrop={this.handleCarDrop}
+                                    uploading={this.state.uploadingCar}
+                                />
                             </Panel>
                         </Col>
                         <Col xs={6}>
@@ -231,7 +253,10 @@ const Admin = React.createClass({
                                         </Button>
                                     </div>
                                 ))}
-                                <ImageDropzone onDrop={this.handleBackgroundDrop}/>
+                                <ImageDropzone
+                                    onDrop={this.handleBackgroundDrop}
+                                    uploading={this.state.uploadingBackground}
+                                />
                             </Panel>
                         </Col>
                     </Row>
