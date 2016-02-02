@@ -2,8 +2,9 @@
   "name": "ethuil",
   "version": "1.0.0",
   "scripts": {
-    "api": "node ./src/api.js",
-    "transpile": "browserify ./src/client/index.jsx -o ./public/bundle.js -t [ babelify --presets [ es2015 react ] ]"
+    "api": "node ./api.js",
+    "server": "node ./server.js",
+    "watch": "webpack --progress --color --watch"
   },
   "repository": {
     "type": "git",
@@ -16,13 +17,15 @@
   },
   "homepage": "https://github.com/sheldarr/Ethuil",
   "devDependencies": {
-    "babel-eslint": "^5.0.0-beta6",
-    "babel-preset-es2015": "^6.0.15",
-    "babel-preset-react": "^6.0.15",
-    "babelify": "^7.2.0",
+    "babel-core": "^6.4.5",
+    "babel-eslint": "^4.1.8",
+    "babel-loader": "^6.2.1",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
     "body-parser": "^1.14.2",
     "express": "^4.13.3",
     "multer": "^1.1.0",
+    "webpack": "^1.12.12",
     "winston": "^2.1.1"
   },
   "dependencies": {

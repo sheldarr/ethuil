@@ -14,6 +14,7 @@ var logger = new (winston.Logger)({
 
 const app = express();
 
+app.use('/bin', express.static(__dirname + '/bin'));
 app.use('/public', express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
