@@ -41512,7 +41512,7 @@
 /***/ function(module, exports) {
 
 	module.exports = {
-		"apiAddress": "http://178.62.6.112:3033/"
+		"apiAddress": "http://178.62.6.112:3033"
 	};
 
 /***/ },
