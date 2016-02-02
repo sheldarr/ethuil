@@ -78,6 +78,8 @@ router.get('/background', function (req, res) {
                     reject(err);
                 }
 
+                files.splice(files.indexOf('.gitignore'), 1);
+
                 resolve({statusCode: 200, data: files});
             });
         });
@@ -113,6 +115,8 @@ router.get('/car', function (req, res) {
                 if (err) {
                     reject(err);
                 }
+
+                files.splice(files.indexOf('.gitignore'), 1);
 
                 resolve({statusCode: 200, data: files});
             });
