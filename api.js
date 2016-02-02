@@ -145,7 +145,7 @@ router.delete('/car', function (req, res) {
 router.get('/song', function (req, res) {
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
-            fs.readFile('./public/songs.json', 'utf8', function (err, data) {
+            fs.readFile('./var/songs.json', 'utf8', function (err, data) {
                 if (err) {
                     reject(err);
                 }
@@ -161,7 +161,7 @@ router.get('/song', function (req, res) {
 router.post('/song', function (req, res) {
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
-            fs.readFile('./public/songs.json', 'utf8', function (err, data) {
+            fs.readFile('./var/songs.json', 'utf8', function (err, data) {
                 if (err) {
                     reject(err);
                 }
@@ -173,7 +173,7 @@ router.post('/song', function (req, res) {
 
                 songs.push(newSong);
 
-                fs.writeFile('./public/songs.json', JSON.stringify(songs));
+                fs.writeFile('./var/songs.json', JSON.stringify(songs));
 
                 resolve({statusCode: 200, data: {}});
             });
@@ -184,7 +184,7 @@ router.post('/song', function (req, res) {
 router.delete('/song/:id', function (req, res) {
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {
-            fs.readFile('./public/songs.json', 'utf8', function (err, data) {
+            fs.readFile('./var/songs.json', 'utf8', function (err, data) {
                 if (err) {
                     reject(err);
                 }
