@@ -43193,6 +43193,10 @@
 	    value: true
 	});
 
+	var _configuration = __webpack_require__(457);
+
+	var _configuration2 = _interopRequireDefault(_configuration);
+
 	var _promisePolyfill = __webpack_require__(451);
 
 	var _promisePolyfill2 = _interopRequireDefault(_promisePolyfill);
@@ -43200,10 +43204,6 @@
 	var _superagent = __webpack_require__(453);
 
 	var _superagent2 = _interopRequireDefault(_superagent);
-
-	var _configuration = __webpack_require__(457);
-
-	var _configuration2 = _interopRequireDefault(_configuration);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
