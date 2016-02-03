@@ -32,42 +32,25 @@ const Admin = React.createClass({
     },
 
     downloadBackgrounds () {
-        this.setState({
-            uploadingBackground: true
-        });
-
         BackgroundsApi.getAll()
             .then(response => {
                 this.setState({
-                    backgrounds: response,
-                    uploadingBackground: false
+                    backgrounds: response
                 });
             })
             .catch(error => {
-                this.setState({
-                    uploadingBackground: false
-                });
-
                 alert(error);
             });
     },
 
     downloadCars () {
-        this.setState({
-            uploadingCar: true
-        });
-
         CarsApi.getAll()
             .then(response => {
                 this.setState({
-                    cars: response,
-                    uploadingCar: false
+                    cars: response
                 });
             })
             .catch(error => {
-                this.setState({
-                    uploadingCar: false
-                });
                 alert(error);
             });
     },
@@ -181,21 +164,41 @@ const Admin = React.createClass({
     },
 
     handleCarDrop (car) {
+        this.setState({
+            uploadingCar: true
+        });
+
         CarsApi.create(car)
             .then(response => {
+                this.setState({
+                    uploadingCar: false
+                });
                 this.downloadCars();
             })
             .catch(error => {
+                this.setState({
+                    uploadingCar: false
+                });
                 alert(error);
             });
     },
 
     handleBackgroundDrop (background) {
+        this.setState({
+            uploadingBackground: true
+        });
+
         BackgroundsApi.create(background)
             .then(response => {
+                this.setState({
+                    uploadingBackground: false
+                });
                 this.downloadBackgrounds();
             })
             .catch(error => {
+                this.setState({
+                    uploadingBackground: false
+                });
                 alert(error);
             });
     },

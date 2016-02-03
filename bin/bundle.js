@@ -24088,39 +24088,22 @@
 	    downloadBackgrounds: function downloadBackgrounds() {
 	        var _this = this;
 
-	        this.setState({
-	            uploadingBackground: true
-	        });
-
 	        _backgroundsApi2.default.getAll().then(function (response) {
 	            _this.setState({
-	                backgrounds: response,
-	                uploadingBackground: false
+	                backgrounds: response
 	            });
 	        }).catch(function (error) {
-	            _this.setState({
-	                uploadingBackground: false
-	            });
-
 	            alert(error);
 	        });
 	    },
 	    downloadCars: function downloadCars() {
 	        var _this2 = this;
 
-	        this.setState({
-	            uploadingCar: true
-	        });
-
 	        _carsApi2.default.getAll().then(function (response) {
 	            _this2.setState({
-	                cars: response,
-	                uploadingCar: false
+	                cars: response
 	            });
 	        }).catch(function (error) {
-	            _this2.setState({
-	                uploadingCar: false
-	            });
 	            alert(error);
 	        });
 	    },
@@ -24228,18 +24211,38 @@
 	    handleCarDrop: function handleCarDrop(car) {
 	        var _this7 = this;
 
+	        this.setState({
+	            uploadingCar: true
+	        });
+
 	        _carsApi2.default.create(car).then(function (response) {
+	            _this7.setState({
+	                uploadingCar: false
+	            });
 	            _this7.downloadCars();
 	        }).catch(function (error) {
+	            _this7.setState({
+	                uploadingCar: false
+	            });
 	            alert(error);
 	        });
 	    },
 	    handleBackgroundDrop: function handleBackgroundDrop(background) {
 	        var _this8 = this;
 
+	        this.setState({
+	            uploadingBackground: true
+	        });
+
 	        _backgroundsApi2.default.create(background).then(function (response) {
+	            _this8.setState({
+	                uploadingBackground: false
+	            });
 	            _this8.downloadBackgrounds();
 	        }).catch(function (error) {
+	            _this8.setState({
+	                uploadingBackground: false
+	            });
 	            alert(error);
 	        });
 	    },
