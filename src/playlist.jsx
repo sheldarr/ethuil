@@ -160,7 +160,8 @@ const Playlist = React.createClass({
     },
 
     playSong (url) {
-        var videoId = url.match(/\?v=(.*)/)[1];
+        var matches = url.match(/\?v=(.*)&|\?v=(.*)$/);
+        var videoId = matches[1] ? matches[1] : matches[2];
 
         this.setState({
             currentSong: url,

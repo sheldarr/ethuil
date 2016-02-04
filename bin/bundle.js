@@ -41540,7 +41540,7 @@
 /***/ function(module, exports) {
 
 	module.exports = {
-		"apiAddress": "http://178.62.6.112:3033"
+		"apiAddress": "http://localhost:3033"
 	};
 
 /***/ },
@@ -57405,7 +57405,8 @@
 	        event.target.setVolume(100);
 	    },
 	    playSong: function playSong(url) {
-	        var videoId = url.match(/\?v=(.*)/)[1];
+	        var matches = url.match(/\?v=(.*)&|\?v=(.*)$/);
+	        var videoId = matches[1] ? matches[1] : matches[2];
 
 	        this.setState({
 	            currentSong: url,
