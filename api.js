@@ -197,7 +197,7 @@ router.delete('/song/:id', function (req, res) {
 
                 _.remove(songs, song => song.id === parseInt(req.params.id, 10));
 
-                fs.writeFile('./public/songs.json', JSON.stringify(songs));
+                fs.writeFile('./var/songs.json', JSON.stringify(songs));
 
                 resolve({statusCode: 200, data: {}});
             });
