@@ -12,7 +12,7 @@ ReactDOM.render(
     <Router>
         <Route component={Application} path="/">
           <IndexRoute component={Playlist} />
-          <Route component={Admin} path="admin" />
+          <Route component={Admin} path="admin/:authenticationKey" />
           <Route component={NotFound} path="*" />
         </Route>
     </Router>,

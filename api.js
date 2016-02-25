@@ -70,6 +70,29 @@ router.get('/', function (req, res) {
     });
 });
 
+router.post('/authenticate', function (req, res) {
+    handleErrors(req, res, () => {
+        return new Promise((resolve, reject) => {
+            fs.readFile('./var/configuration.json', 'utf8', function (err, data) {
+                if (err) {
+                    reject(err);
+                }
+
+                var authenticationKey = JSON.parse(data).authenticationKey;
+
+                console.log(req.body);
+
+                if (req.body.authenticationKey === authenticationKey) {
+                    resolve({statusCode: 200, data: {}});
+                }
+
+                console.log(401);
+                resolve({statusCode: 401, data: {}});
+            });
+        });
+    });
+});
+
 router.get('/background', function (req, res) {
     handleErrors(req, res, () => {
         return new Promise((resolve, reject) => {

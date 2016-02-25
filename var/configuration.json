@@ -1,3 +1,4 @@
 {
-    "apiAddress": "http://localhost:3033"
+    "apiAddress": "http://localhost:3033",
+    "authenticationKey": "98b519bea60047ae93995279f3f89dad"
 }

@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Col, Glyphicon, Grid, Nav, Navbar, NavItem, Panel, Row, Table } from 'react-bootstrap';
 
 import AddSong from './addSong.jsx';
+import AuthenticationApi from './authenticationApi.jsx';
 import BackgroundsApi from './backgroundsApi.jsx';
 import CarsApi from './carsApi.jsx';
 import ConfirmationModal from './confirmationModal.jsx';
@@ -10,8 +11,15 @@ import ImageDropzone from './imageDropzone.jsx';
 import SongsApi from './songsApi.jsx';
 
 const Admin = React.createClass({
+    propTypes: {
+        params: React.PropTypes.shape({
+            authenticationKey: React.PropTypes.string
+        })
+    },
+
     getInitialState () {
         return {
+            authenticated: false,
             backgrounds: [],
             cars: [],
             confirmationModalBody: '',
@@ -26,9 +34,22 @@ const Admin = React.createClass({
     },
 
     componentDidMount () {
+        this.authenticate();
         this.downloadBackgrounds();
         this.downloadCars();
         this.downloadSongs();
+    },
+
+    authenticate () {
+        AuthenticationApi.authenticate(this.props.params.authenticationKey)
+            .then(response => {
+                this.setState({
+                    authenticated: true
+                });
+            })
+            .catch(error => {
+                alert(error);
+            });
     },
 
     downloadBackgrounds () {
@@ -208,11 +229,16 @@ const Admin = React.createClass({
     },
 
     render () {
+        if (!this.state.authenticated) {
+            return null;
+        }
+
         return (
             <div>
                 <Navbar>
                     <Navbar.Header>
                         <Navbar.Brand>
+                            {this.props.params.authenticationKey}
                             <a href="#">{'Administrator Panel'}</a>
                         </Navbar.Brand>
                     </Navbar.Header>
