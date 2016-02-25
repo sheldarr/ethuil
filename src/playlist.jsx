@@ -251,7 +251,15 @@ const Playlist = React.createClass({
                     }}
                 >
                     <a href="http://www.facebook.com">
-                        <Image rounded src="/public/fb.png"
+                        <Image rounded src="/public/facebook.png"
+                            style={{
+                                height: '30px',
+                                width: '30px'
+                            }}
+                        />
+                    </a>
+                    <a href="http://www.youtube.com">
+                        <Image rounded src="/public/youtube.png"
                             style={{
                                 height: '30px',
                                 width: '30px'
