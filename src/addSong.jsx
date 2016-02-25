@@ -37,7 +37,9 @@ const AddSong = React.createClass({
         }
 
         this.setState({
-            showModal: false
+            name: '',
+            showModal: false,
+            url: ''
         });
     },
 
