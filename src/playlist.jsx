@@ -16,13 +16,13 @@ const Playlist = React.createClass({
             cars: [],
             currentSong: '',
             playlistStyle: {
-                bottom: '5%',
+                bottom: '27%',
                 left: '60%',
-                maxHeight: '50%',
+                maxHeight: '28%',
                 opacity: '0.5',
                 overflowY: 'scroll',
                 position: 'fixed',
-                width: '25%'
+                width: '22%'
             },
             songPaused: false,
             songs: []
@@ -244,10 +244,10 @@ const Playlist = React.createClass({
                 </Panel>
                 <div
                     style={{
-                        bottom: '2%',
+                        bottom: '25%',
                         left: '60%',
                         position: 'fixed',
-                        width: '25%'
+                        width: '22%'
                     }}
                 >
                     <a href="http://www.facebook.com">
