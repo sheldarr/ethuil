@@ -21,6 +21,7 @@ const Playlist = React.createClass({
                 left: '60%',
                 maxHeight: '28%',
                 opacity: '0.5',
+                overflowX: 'hidden',
                 overflowY: 'scroll',
                 position: 'fixed',
                 width: '22%'
